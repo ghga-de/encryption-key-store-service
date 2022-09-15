@@ -3,16 +3,6 @@
   "description": "Modifies the orginal Settings class provided by the user",
   "type": "object",
   "properties": {
-    "aws_config_ini": {
-      "title": "Aws Config Ini",
-      "description": "Path to a config file for specifying more advanced S3 parameters. This should follow the format described here: https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#using-a-configuration-file",
-      "example": "~/.aws/config",
-      "env_names": [
-        "encryption_key_store_aws_config_ini"
-      ],
-      "type": "string",
-      "format": "path"
-    },
     "service_name": {
       "title": "Service Name",
       "default": "encryption_key_store",
