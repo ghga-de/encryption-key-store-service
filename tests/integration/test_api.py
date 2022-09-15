@@ -18,7 +18,7 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from my_microservice.api.main import app
+from encryption_key_store.api.main import app
 
 
 def test_index():
