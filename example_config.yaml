@@ -11,11 +11,5 @@ language: Greek
 log_level: info
 openapi_url: /openapi.json
 port: 8080
-rabbitmq_host: rabbitmq
-rabbitmq_port: 5672
-s3_access_key_id: test
-s3_endpoint_url: http://localstack:4566
-s3_secret_access_key: test
-s3_session_token: null
 service_name: encryption_key_store
 workers: 1
