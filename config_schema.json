@@ -3,14 +3,6 @@
   "description": "Modifies the orginal Settings class provided by the user",
   "type": "object",
   "properties": {
-    "service_name": {
-      "title": "Service Name",
-      "default": "encryption_key_store",
-      "env_names": [
-        "encryption_key_store_service_name"
-      ],
-      "type": "string"
-    },
     "host": {
       "title": "Host",
       "description": "IP of the host.",
@@ -143,6 +135,14 @@
       "items": {
         "type": "string"
       }
+    },
+    "service_name": {
+      "title": "Service Name",
+      "default": "encryption_key_store",
+      "env_names": [
+        "encryption_key_store_service_name"
+      ],
+      "type": "string"
     },
     "language": {
       "title": "Language",
