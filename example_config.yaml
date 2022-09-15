@@ -1,6 +1,5 @@
 api_root_path: /
 auto_reload: false
-aws_config_ini: null
 cors_allow_credentials: null
 cors_allowed_headers: null
 cors_allowed_methods: null
