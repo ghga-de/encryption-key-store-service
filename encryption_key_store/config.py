@@ -18,15 +18,13 @@
 from ghga_service_chassis_lib.api import ApiConfigBase
 from ghga_service_chassis_lib.config import config_from_yaml
 
-from .models import SupportedLanguages
-
 
 @config_from_yaml(prefix="encryption_key_store")
 class Config(ApiConfigBase):
     """Config parameters and their defaults."""
 
     service_name: str = "encryption_key_store"
-    language: SupportedLanguages = "Croatian"
+    dummy_config: str = ""
 
 
 CONFIG = Config()

@@ -144,17 +144,11 @@
       ],
       "type": "string"
     },
-    "language": {
-      "title": "Language",
-      "default": "Croatian",
+    "dummy_config": {
+      "title": "Dummy Config",
+      "default": "",
       "env_names": [
-        "encryption_key_store_language"
-      ],
-      "enum": [
-        "Greek",
-        "Croatian",
-        "French",
-        "German"
+        "encryption_key_store_dummy_config"
       ],
       "type": "string"
     }

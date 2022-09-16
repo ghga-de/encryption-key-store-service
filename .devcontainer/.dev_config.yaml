@@ -1,3 +1,4 @@
 # Please only mention the non-default settings here:
 
-language: Greek
+# Delete this, once real config settings are used
+dummy_config: ""
