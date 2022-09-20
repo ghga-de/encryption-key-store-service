@@ -23,9 +23,9 @@ from fastapi import FastAPI
 from ghga_service_chassis_lib.api import configure_app
 
 from ..config import CONFIG
-from .upload import upload_router
+from .upload.router import upload_router
 
 app = FastAPI()
 configure_app(app, config=CONFIG)
 
-app.include_router(upload_router.router)
+app.include_router(upload_router)
