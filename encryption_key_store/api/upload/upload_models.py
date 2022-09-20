@@ -13,19 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-Module containing the main FastAPI router and (optionally) top-level API enpoints.
-Additional endpoints might be structured in dedicated modules
-(each of them having a sub-router).
-"""
+"""Defines dataclasses for holding business-logic data"""
 
-from fastapi import FastAPI
-from ghga_service_chassis_lib.api import configure_app
+from pydantic import BaseModel
 
-from ..config import CONFIG
-from .upload import upload_router
 
-app = FastAPI()
-configure_app(app, config=CONFIG)
+class InboundEnvelopeQuery(BaseModel):
+    """
+    Request object containing first file part and user ID.
+    """
 
-app.include_router(upload_router.router)
+    user_id: str
+    file_part: bytes
+
+
+class InboundEnvelopeContent(BaseModel):
+    """
+    Contains file encryption/decryption secret extracted from file envelope, the ID
+    generated for this secret and the file content offset, i.e. the location of the
+    encrypted file content within the file.
+    """
+
+    secret: bytes
+    secret_id: str
+    offset: int
