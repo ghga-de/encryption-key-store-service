@@ -33,6 +33,7 @@ async def extract_envelope_content(
     """
     envelope_stream = io.BytesIO(file_part)
 
+    # (method - only 0 supported for now, private_key, public_key)
     ghga_keys = [(0, ghga_secret, None)]
     session_keys, __ = crypt4gh.header.deconstruct(
         infile=envelope_stream,
@@ -53,5 +54,6 @@ async def store_secret(file_secret: bytes) -> str:
 
 async def get_crypt4gh_private_key() -> bytes:
     """Retrieve current GHGA private key"""
-    private_key = await find_one_ghga_secret_key()
+    # discard the secret_id for now until we now where to cache it
+    private_key, _ = await find_one_ghga_secret_key()
     return private_key

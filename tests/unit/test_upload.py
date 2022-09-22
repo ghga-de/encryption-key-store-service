@@ -13,13 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Test dummy."""
+"""Unit tests for upload functionality"""
 
 
 import pytest
 
 from encryption_key_store.core.envelope_decryption import extract_envelope_content
-from encryption_key_store.core.mongo_dao import get_ghga_secret_key, insert_file_secret
+from encryption_key_store.core.mongo_dao import (
+    find_one_ghga_secret_key,
+    insert_file_secret,
+)
 
 from ..fixtures.file_fixture import first_part_fixture  # noqa: F401
 from ..fixtures.file_fixture import FirstPartFixture
@@ -36,7 +39,11 @@ async def test_extract(
     config = first_part_fixture.ghga_secrets_dao_fixture.config
     known_secret_id = first_part_fixture.ghga_secrets_dao_fixture.secret_id
 
-    ghga_secret = await get_ghga_secret_key(id_=known_secret_id, config=config)
+    ghga_secret, ghga_secret_id = await find_one_ghga_secret_key(config=config)
+
+    # sanity check to see if we hit the wrong db, i.e. missed passing the correct config somewhere
+    assert known_secret_id == ghga_secret_id
+
     file_secret, offset = await extract_envelope_content(
         file_part=first_part_fixture.content, ghga_secret=ghga_secret
     )

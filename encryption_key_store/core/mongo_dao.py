@@ -107,12 +107,15 @@ async def get_ghga_secret_key(id_: str, config: MongoDbConfig = CONFIG) -> bytes
     return keypair[1]
 
 
-async def find_one_ghga_secret_key(config: MongoDbConfig = CONFIG) -> bytes:
-    """Find one GHGA secret key"""
+async def find_one_ghga_secret_key(config: MongoDbConfig = CONFIG) -> Tuple[bytes, str]:
+    """
+    Find GHGA secret key. Assume we only have one and also return ID for later reuse
+    """
     dao = await get_ghga_secret_dao(config=config)
     match_all = {"$regex": ".*"}
-    result = await dao.find_one(mapping={"id": match_all})
-    return base64.b64decode(result.private_key)
+    # apparently can't match on id, use another one instead
+    result = await dao.find_one(mapping={"private_key": match_all})
+    return base64.b64decode(result.private_key), result.id
 
 
 async def insert_ghga_keypair(
