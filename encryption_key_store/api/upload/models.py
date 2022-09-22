@@ -24,7 +24,7 @@ class InboundEnvelopeQuery(BaseModel):
     """
 
     user_id: str
-    file_part: bytes
+    file_part: str
 
 
 class InboundEnvelopeContent(BaseModel):
@@ -34,6 +34,6 @@ class InboundEnvelopeContent(BaseModel):
     encrypted file content within the file.
     """
 
-    secret: bytes
+    secret: str
     secret_id: str
     offset: int

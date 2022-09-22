@@ -19,10 +19,7 @@ from typing import Tuple
 
 import crypt4gh.header
 
-from encryption_key_store.core.mongo_dao import (
-    find_one_ghga_secret_key,
-    insert_file_secret,
-)
+from encryption_key_store.core.db_interop.mongo_dao import MongoDbDao
 
 
 async def extract_envelope_content(
@@ -46,14 +43,14 @@ async def extract_envelope_content(
     return file_secret, offset
 
 
-async def store_secret(file_secret: bytes) -> str:
+async def store_secret(*, file_secret: bytes, dao: MongoDbDao) -> str:
     """Store file secret, get id"""
-    secret_id = await insert_file_secret(file_secret=file_secret)
+    secret_id = await dao.insert_file_secret(file_secret=file_secret)
     return secret_id
 
 
-async def get_crypt4gh_private_key() -> bytes:
+async def get_crypt4gh_private_key(*, dao: MongoDbDao) -> bytes:
     """Retrieve current GHGA private key"""
     # discard the secret_id for now until we now where to cache it
-    private_key, _ = await find_one_ghga_secret_key()
+    private_key, _ = await dao.find_one_ghga_secret_key()
     return private_key

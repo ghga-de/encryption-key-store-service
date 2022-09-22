@@ -22,8 +22,6 @@ import crypt4gh.lib
 import pytest_asyncio
 from ghga_service_chassis_lib.utils import big_temp_file
 
-from encryption_key_store.core.mongo_dao import get_ghga_public_key
-
 from .ghga_secrets import generate_secrets_fixture  # noqa: F401
 from .ghga_secrets import ghga_secrets_dao_fixture  # noqa: F401
 from .ghga_secrets import GenerateSecretsFixture, GHGASecretsDaoFixture
@@ -51,9 +49,9 @@ async def first_part_fixture(
 
     with big_temp_file(file_size) as raw_file:
         with io.BytesIO() as encrypted_file:
-            ghga_public = await get_ghga_public_key(
-                id_=ghga_secrets_dao_fixture.secret_id,
-                config=ghga_secrets_dao_fixture.config,
+            dao = ghga_secrets_dao_fixture.dao
+            ghga_public = await dao.get_ghga_public_key(
+                id_=ghga_secrets_dao_fixture.secret_id
             )
             keys = [(0, generate_secrets_fixture.private_key, ghga_public)]
             # rewind input file for reading

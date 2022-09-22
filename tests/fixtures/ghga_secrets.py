@@ -15,16 +15,17 @@
 """Provides a fixture around MongoDB, prefilling the DB with test data"""
 
 from dataclasses import dataclass
+from pathlib import Path
+from tempfile import mkstemp
 from typing import AsyncGenerator
 
 import pytest_asyncio
 from crypt4gh.keys import get_private_key, get_public_key
 from crypt4gh.keys.c4gh import generate as generate_keypair
-from hexkit.providers.mongodb import MongoDbConfig
 from hexkit.providers.mongodb.testutils import config_from_mongodb_container
 from testcontainers.mongodb import MongoDbContainer
 
-from encryption_key_store.core.mongo_dao import insert_ghga_keypair
+from encryption_key_store.core.db_interop.mongo_dao import MongoDbDao
 
 
 @dataclass
@@ -41,21 +42,25 @@ class GHGASecretsDaoFixture:
     Fixture containing config for DAOs and the ID of the GHGA secret inserted
     """
 
-    config: MongoDbConfig
+    dao: MongoDbDao
     secret_id: str
 
 
 @pytest_asyncio.fixture
-async def generate_secrets_fixture(
-    tmp_path,
-) -> AsyncGenerator[GenerateSecretsFixture, None]:
+async def generate_secrets_fixture() -> AsyncGenerator[GenerateSecretsFixture, None]:
     """Creates a keypair using crypt4gh"""
-    # Crypt4GH always writes to file
-    public_key_file = tmp_path / "public.key"
-    private_key_file = tmp_path / "private.key"
-    generate_keypair(seckey=private_key_file, pubkey=public_key_file)
-    public_key = get_public_key(public_key_file)
-    private_key = get_private_key(private_key_file, lambda: None)
+    # Crypt4GH always writes to file and tmp_path fixture causes permission issues
+
+    sk_file, sk_path = mkstemp(prefix="private", suffix=".key")
+    pk_file, pk_path = mkstemp(prefix="public", suffix=".key")
+
+    generate_keypair(seckey=sk_file, pubkey=pk_file)
+    public_key = get_public_key(pk_path)
+    private_key = get_private_key(sk_path, lambda: None)
+
+    Path(pk_path).unlink()
+    Path(sk_path).unlink()
+
     yield GenerateSecretsFixture(public_key=public_key, private_key=private_key)
 
 
@@ -70,10 +75,10 @@ async def ghga_secrets_dao_fixture(
     """
     with MongoDbContainer(image="mongo:5.0.11") as mongodb:
         config = config_from_mongodb_container(mongodb)
+        dao = MongoDbDao(config=config)
 
-        secret_id = await insert_ghga_keypair(
+        secret_id = await dao.insert_ghga_keypair(
             public_key=generate_secrets_fixture.public_key,
             private_key=generate_secrets_fixture.private_key,
-            config=config,
         )
-        yield GHGASecretsDaoFixture(config=config, secret_id=secret_id)
+        yield GHGASecretsDaoFixture(dao=dao, secret_id=secret_id)
