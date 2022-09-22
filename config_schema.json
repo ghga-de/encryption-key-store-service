@@ -5,11 +5,13 @@
   "properties": {
     "db_connection_str": {
       "title": "Db Connection Str",
-      "default": "mongodb://localhost:27017",
+      "default": "**********",
       "env_names": [
         "encryption_key_store_db_connection_str"
       ],
-      "type": "string"
+      "type": "string",
+      "writeOnly": true,
+      "format": "password"
     },
     "db_name": {
       "title": "Db Name",

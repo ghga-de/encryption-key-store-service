@@ -111,7 +111,7 @@ class MongoDbDao:
         dao = await self.get_ghga_secret_dao()
         match_all = {"$regex": ".*"}
         # apparently can't match on id, use another one instead
-        result = await dao.find_one(mapping={"private_key": match_all})
+        result = await dao.find_one(mapping={"public_key": match_all})
         return base64.b64decode(result.private_key), result.id
 
     async def insert_ghga_keypair(
