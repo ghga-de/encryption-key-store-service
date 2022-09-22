@@ -22,8 +22,8 @@ Additional endpoints might be structured in dedicated modules
 from fastapi import FastAPI
 from ghga_service_chassis_lib.api import configure_app
 
-from ..config import CONFIG
-from .upload.router import upload_router
+from encryption_key_store.api.upload.router import upload_router
+from encryption_key_store.config import CONFIG
 
 app = FastAPI()
 configure_app(app, config=CONFIG)

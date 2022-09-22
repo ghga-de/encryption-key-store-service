@@ -17,14 +17,16 @@
 
 from ghga_service_chassis_lib.api import ApiConfigBase
 from ghga_service_chassis_lib.config import config_from_yaml
+from hexkit.providers.mongodb import MongoDbConfig
 
 
 @config_from_yaml(prefix="encryption_key_store")
-class Config(ApiConfigBase):
+class Config(ApiConfigBase, MongoDbConfig):
     """Config parameters and their defaults."""
 
     service_name: str = "encryption_key_store"
-    dummy_config: str = ""
+    db_connection_str: str = "mongodb://localhost:27017"
+    db_name: str = "keystore"
 
 
 CONFIG = Config()

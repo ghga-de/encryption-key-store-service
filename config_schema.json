@@ -3,6 +3,22 @@
   "description": "Modifies the orginal Settings class provided by the user",
   "type": "object",
   "properties": {
+    "db_connection_str": {
+      "title": "Db Connection Str",
+      "default": "mongodb://localhost:27017",
+      "env_names": [
+        "encryption_key_store_db_connection_str"
+      ],
+      "type": "string"
+    },
+    "db_name": {
+      "title": "Db Name",
+      "default": "keystore",
+      "env_names": [
+        "encryption_key_store_db_name"
+      ],
+      "type": "string"
+    },
     "host": {
       "title": "Host",
       "description": "IP of the host.",
@@ -141,14 +157,6 @@
       "default": "encryption_key_store",
       "env_names": [
         "encryption_key_store_service_name"
-      ],
-      "type": "string"
-    },
-    "dummy_config": {
-      "title": "Dummy Config",
-      "default": "",
-      "env_names": [
-        "encryption_key_store_dummy_config"
       ],
       "type": "string"
     }

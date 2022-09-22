@@ -1,11 +1,8 @@
 api_root_path: /
 auto_reload: false
-cors_allow_credentials: null
-cors_allowed_headers: null
-cors_allowed_methods: null
-cors_allowed_origins: null
+db_name: keystore
+db_url: "mongodb://localhost:27017"
 docs_url: /docs
-dummy_config: ''
 host: 127.0.0.1
 log_level: info
 openapi_url: /openapi.json

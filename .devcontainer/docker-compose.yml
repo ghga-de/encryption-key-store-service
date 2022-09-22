@@ -34,7 +34,7 @@ services:
       ENCRYPTION_KEY_STORE_CONFIG_YAML: /workspace/.devcontainer/.dev_config.yaml
 
   mongodb:
-    image: mongo:latest
+    image: mongo:5.0.11
     restart: unless-stopped
     volumes:
       - mongo_fs:/data/db

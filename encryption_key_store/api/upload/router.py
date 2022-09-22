@@ -16,8 +16,12 @@
 
 from fastapi import APIRouter, status
 
-from . import exceptions, models
-from .envelope_decryption import extract_envelope_content, store_secret
+from encryption_key_store.api.upload import exceptions, models
+from encryption_key_store.core.envelope_decryption import (
+    extract_envelope_content,
+    get_crypt4gh_private_key,
+    insert_file_secret,
+)
 
 upload_router = APIRouter()
 
@@ -50,12 +54,15 @@ async def post_encryption_secrets(*, envelope_query: models.InboundEnvelopeQuery
     file content offset"""
     user_id = envelope_query.user_id
     try:
-        secret, offset = await extract_envelope_content(envelope_query.file_part)
+        ghga_secret = await get_crypt4gh_private_key()
+        file_secret, offset = await extract_envelope_content(
+            file_part=envelope_query.file_part, ghga_secret=ghga_secret
+        )
+        secret_id = await insert_file_secret(file_secret=file_secret)
     except ValueError as error:
         # Everything in crypt4gh is an ValueError... try to distinguish based on message
         if "No supported encryption method" == str(error):
             raise exceptions.HttpEnvelopeDecrpytionError() from error
         raise exceptions.HttpMalformedOrMissingEnvelopeError(user_id=user_id) from error
 
-    secret_id = await store_secret(secret)
-    return {"secret": secret, "secret_id": secret_id, "offset": offset}
+    return {"secret": file_secret, "secret_id": secret_id, "offset": offset}

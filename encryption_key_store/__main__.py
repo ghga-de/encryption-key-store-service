@@ -23,7 +23,6 @@ from .config import CONFIG, Config
 
 def run(config: Config = CONFIG):
     """Run the service"""
-    # Please adapt to package name
     run_server(app="encryption_key_store.__main__:app", config=config)
 
 

@@ -12,24 +12,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Implements actual functionality for envelope decryption and secret storage"""
+"""Implements functionality for envelope decryption and secret storage"""
 
 import io
 from typing import Tuple
 
 import crypt4gh.header
 
+from encryption_key_store.core.mongo_dao import (
+    find_one_ghga_secret_key,
+    insert_file_secret,
+)
 
-async def extract_envelope_content(file_part: bytes) -> Tuple[bytes, int]:
+
+async def extract_envelope_content(
+    *, file_part: bytes, ghga_secret: bytes
+) -> Tuple[bytes, int]:
     """
     Extract file encryption/decryption secret and file content offset from envelope
     """
     envelope_stream = io.BytesIO(file_part)
 
-    # request crypt4gh private key
-    ghga_sec = await get_crypt4gh_private_key()
-    ghga_keys = [(0, ghga_sec, None)]
-
+    ghga_keys = [(0, ghga_secret, None)]
     session_keys, __ = crypt4gh.header.deconstruct(
         infile=envelope_stream,
         keys=ghga_keys,
@@ -41,17 +45,13 @@ async def extract_envelope_content(file_part: bytes) -> Tuple[bytes, int]:
     return file_secret, offset
 
 
+async def store_secret(file_secret: bytes) -> str:
+    """Store file secret, get id"""
+    secret_id = await insert_file_secret(file_secret=file_secret)
+    return secret_id
+
+
 async def get_crypt4gh_private_key() -> bytes:
-    """
-    TODO
-    """
-    return b"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-
-async def store_secret(_: bytes) -> str:
-    """
-    TODO
-    """
-    # insert into mongo_db
-    dummy_id = "DUMMY"
-    return dummy_id
+    """Retrieve current GHGA private key"""
+    private_key = await find_one_ghga_secret_key()
+    return private_key

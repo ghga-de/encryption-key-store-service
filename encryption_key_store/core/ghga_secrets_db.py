@@ -12,5 +12,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+Provides DataTransferObjects to handle GHGA secrets in Mongo DB
+"""
 
-"""Consuming or Subscribing to Async Messaging Topics"""
+from pydantic import BaseModel
+
+
+class GHGASecretCreationDto(BaseModel):
+    """
+    DTO wrapping base64 encoded representations of a GHGA keypair.
+    Call site needs to handle encoding/decoding.
+    """
+
+    public_key: str
+    private_key: str
+
+
+class GHGASecretDto(GHGASecretCreationDto):
+    """
+    GHGASecretCreationDto with added ID for GHGA secrets returned from MongoDB
+    """
+
+    id: str
