@@ -5,7 +5,8 @@
   "properties": {
     "db_connection_str": {
       "title": "Db Connection Str",
-      "default": "**********",
+      "description": "MongoDB connection string. Might include credentials. For more information see: https://naiveskill.com/mongodb-connection-string/",
+      "example": "mongodb://localhost:27017",
       "env_names": [
         "encryption_key_store_db_connection_str"
       ],
@@ -163,5 +164,8 @@
       "type": "string"
     }
   },
+  "required": [
+    "db_connection_str"
+  ],
   "additionalProperties": false
 }
