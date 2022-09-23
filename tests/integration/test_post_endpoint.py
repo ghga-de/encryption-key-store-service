@@ -15,6 +15,7 @@
 """Checking if POST on /secrets works correctly"""
 import base64
 import codecs
+import os
 
 import pytest
 from fastapi.testclient import TestClient
@@ -82,6 +83,8 @@ async def test_corrupted_header(
     }
     response = client.post(url="/secrets", json=request_body)
     assert response.status_code == 400
+    body = response.json()
+    assert body["exception_id"] == "malformedOrMissingEnvelopeError"
 
 
 @pytest.mark.asyncio
@@ -89,7 +92,7 @@ async def test_missing_envelope(
     *,
     first_part_fixture: FirstPartFixture,  # noqa: F811
 ):
-    """Test request response for /secrets endpoint with envelope + some data missing"""
+    """Test request response for /secrets endpoint without envelope"""
 
     async def dao_override() -> MongoDbDao:
         """Ad hoc DAO dependency overridde"""
@@ -99,7 +102,7 @@ async def test_missing_envelope(
 
     payload = first_part_fixture.content
     content = base64.b64encode(payload).hex()
-    content = content[500:]
+    content = content[124:]
 
     request_body = {
         "user_id": "Test-User",
@@ -107,6 +110,8 @@ async def test_missing_envelope(
     }
     response = client.post(url="/secrets", json=request_body)
     assert response.status_code == 400
+    body = response.json()
+    assert body["exception_id"] == "malformedOrMissingEnvelopeError"
 
 
 @pytest.mark.asyncio
@@ -122,7 +127,7 @@ async def test_invalid_secret(
         secret_id = first_part_fixture.ghga_secrets_dao_fixture.secret_id
         ghga_dao = await dao.get_ghga_secret_dao()
         await ghga_dao.delete(id_=secret_id)
-        fake_secret = "This_is_rubbish_not_a_secret_e-i-e-i-o"
+        fake_secret = base64.b64encode(os.urandom(32)).hex()
         dto = GHGASecretCreationDto(
             public_key=fake_secret[::-1], private_key=fake_secret
         )
@@ -137,3 +142,5 @@ async def test_invalid_secret(
     }
     response = client.post(url="/secrets", json=request_body)
     assert response.status_code == 403
+    body = response.json()
+    assert body["exception_id"] == "envelopeDecryptionError"
