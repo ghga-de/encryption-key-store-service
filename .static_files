@@ -14,7 +14,6 @@
 scripts/update_static_files.py
 scripts/license_checker.py
 scripts/get_package_name.py
-scripts/get_config_schema_and_example.py
 scripts/check_mandatory_and_static_files.py
 scripts/README.md
 
@@ -30,7 +29,6 @@ pytest.ini
 .flake8
 .gitattributes
 .gitignore
-.pre-commit-config.yaml
 .pylintrc
 .mypy.ini
 
