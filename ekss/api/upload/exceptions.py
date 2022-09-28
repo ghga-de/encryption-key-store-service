@@ -26,14 +26,12 @@ class HttpMalformedOrMissingEnvelopeError(HttpCustomExceptionBase):
     class DataModel(BaseModel):
         """Model for exception data"""
 
-        user_id: str
-
-    def __init__(self, *, user_id: str, status_code: int = 400):
+    def __init__(self, *, status_code: int = 400):
         """Construct message and init the exception."""
         super().__init__(
             status_code=status_code,
             description=("Envelope malformed or missing"),
-            data={"user_id": user_id},
+            data={},
         )
 
 

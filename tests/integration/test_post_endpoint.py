@@ -15,20 +15,18 @@
 """Checking if POST on /secrets works correctly"""
 import base64
 import codecs
-import os
 
 import pytest
 from fastapi.testclient import TestClient
 
 from ekss.api.main import app
-from ekss.api.upload.router import dao_injector
+from ekss.api.upload.router import dao_injector, private_key_injector
 from ekss.core.dao.mongo_db import MongoDbDao
-from ekss.core.dto.dto_models import GHGASecretCreationDto
 
+from ..fixtures.dao_keypair import dao_keypair_fixture  # noqa: F401
+from ..fixtures.dao_keypair import generate_keypair_fixture  # noqa: F401
 from ..fixtures.file_fixture import first_part_fixture  # noqa: F401
 from ..fixtures.file_fixture import FirstPartFixture
-from ..fixtures.ghga_secrets import generate_secrets_fixture  # noqa: F401
-from ..fixtures.ghga_secrets import ghga_secrets_dao_fixture  # noqa: F401
 
 client = TestClient(app=app)
 
@@ -42,14 +40,21 @@ async def test_post_secrets(
 
     async def dao_override() -> MongoDbDao:
         """Ad hoc DAO dependency overridde"""
-        return first_part_fixture.ghga_secrets_dao_fixture.dao
+        return first_part_fixture.dao_keypair_fixture.dao
+
+    async def private_key_override() -> str:
+        """Inject test key into API config"""
+        return base64.b64encode(
+            first_part_fixture.dao_keypair_fixture.keypair.private_key
+        ).decode("utf-8")
 
     app.dependency_overrides[dao_injector] = dao_override
+    app.dependency_overrides[private_key_injector] = private_key_override
 
     payload = first_part_fixture.content
 
     request_body = {
-        "user_id": "Test-User",
+        "public_key": base64.b64encode(first_part_fixture.client_pubkey).hex(),
         "file_part": base64.b64encode(payload).hex(),
     }
     response = client.post(url="/secrets", json=request_body)
@@ -70,15 +75,22 @@ async def test_corrupted_header(
 
     async def dao_override() -> MongoDbDao:
         """Ad hoc DAO dependency overridde"""
-        return first_part_fixture.ghga_secrets_dao_fixture.dao
+        return first_part_fixture.dao_keypair_fixture.dao
+
+    async def private_key_override() -> str:
+        """Inject test key into API config"""
+        return base64.b64encode(
+            first_part_fixture.dao_keypair_fixture.keypair.private_key
+        ).decode("utf-8")
 
     app.dependency_overrides[dao_injector] = dao_override
+    app.dependency_overrides[private_key_injector] = private_key_override
 
     payload = b"k" + first_part_fixture.content[2:]
     content = base64.b64encode(payload).hex()
 
     request_body = {
-        "user_id": "Test-User",
+        "public_key": base64.b64encode(first_part_fixture.client_pubkey).hex(),
         "file_part": content,
     }
     response = client.post(url="/secrets", json=request_body)
@@ -96,51 +108,25 @@ async def test_missing_envelope(
 
     async def dao_override() -> MongoDbDao:
         """Ad hoc DAO dependency overridde"""
-        return first_part_fixture.ghga_secrets_dao_fixture.dao
+        return first_part_fixture.dao_keypair_fixture.dao
+
+    async def private_key_override() -> str:
+        """Inject test key into API config"""
+        return base64.b64encode(
+            first_part_fixture.dao_keypair_fixture.keypair.private_key
+        ).decode("utf-8")
 
     app.dependency_overrides[dao_injector] = dao_override
-
+    app.dependency_overrides[private_key_injector] = private_key_override
     payload = first_part_fixture.content
     content = base64.b64encode(payload).hex()
     content = content[124:]
 
     request_body = {
-        "user_id": "Test-User",
+        "public_key": base64.b64encode(first_part_fixture.client_pubkey).hex(),
         "file_part": content,
     }
     response = client.post(url="/secrets", json=request_body)
     assert response.status_code == 400
     body = response.json()
     assert body["exception_id"] == "malformedOrMissingEnvelopeError"
-
-
-@pytest.mark.asyncio
-async def test_invalid_secret(
-    *,
-    first_part_fixture: FirstPartFixture,  # noqa: F811
-):
-    """Test request response for"""
-
-    async def dao_override() -> MongoDbDao:
-        """Ad hoc DAO dependency overridde. Replace secret after encyption"""
-        dao = first_part_fixture.ghga_secrets_dao_fixture.dao
-        secret_id = first_part_fixture.ghga_secrets_dao_fixture.secret_id
-        ghga_dao = await dao.get_ghga_secret_dao()
-        await ghga_dao.delete(id_=secret_id)
-        fake_secret = base64.b64encode(os.urandom(32)).hex()
-        dto = GHGASecretCreationDto(
-            public_key=fake_secret[::-1], private_key=fake_secret
-        )
-        await ghga_dao.insert(dto=dto)
-        return dao
-
-    app.dependency_overrides[dao_injector] = dao_override
-
-    request_body = {
-        "user_id": "Test-User",
-        "file_part": base64.b64encode(first_part_fixture.content).hex(),
-    }
-    response = client.post(url="/secrets", json=request_body)
-    assert response.status_code == 403
-    body = response.json()
-    assert body["exception_id"] == "envelopeDecryptionError"

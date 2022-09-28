@@ -22,11 +22,7 @@ from fastapi import APIRouter, Depends, status
 from ekss.api.upload import exceptions, models
 from ekss.config import CONFIG
 from ekss.core.dao.mongo_db import MongoDbDao
-from ekss.core.envelope_decryption import (
-    extract_envelope_content,
-    get_crypt4gh_private_key,
-    store_secret,
-)
+from ekss.core.envelope_decryption import extract_envelope_content, store_secret
 
 upload_router = APIRouter()
 
@@ -47,6 +43,11 @@ async def dao_injector() -> MongoDbDao:
     return MongoDbDao(config=CONFIG)
 
 
+async def private_key_injector() -> str:
+    """Injector to replace server private key in tests"""
+    return ""
+
+
 @upload_router.post(
     "/secrets",
     summary="Extract file encryption/decryption secret and file content offset from enevelope",
@@ -62,27 +63,33 @@ async def dao_injector() -> MongoDbDao:
 async def post_encryption_secrets(
     *,
     envelope_query: models.InboundEnvelopeQuery,
-    dao: MongoDbDao = Depends(dao_injector)
+    dao: MongoDbDao = Depends(dao_injector),
+    server_test_key: str = Depends(private_key_injector)
 ):
     """Extract file encryption/decryption secret, create secret ID and extract
     file content offset"""
-    user_id = envelope_query.user_id
-    ghga_secret = await get_crypt4gh_private_key(dao=dao)
-    # Mypy false positive
+    # overwrite for tests
+    if server_test_key:
+        CONFIG.server_private_key = server_test_key
+    # Mypy false positives
+    client_pubkey = base64.b64decode(
+        codecs.decode(envelope_query.public_key, "hex"),  # type: ignore
+    )
     file_part = base64.b64decode(codecs.decode(envelope_query.file_part, "hex"))  # type: ignore
     try:
 
         file_secret, offset = await extract_envelope_content(
-            file_part=file_part, ghga_secret=ghga_secret
+            file_part=file_part,
+            client_pubkey=client_pubkey,
         )
     except ValueError as error:
         # Everything in crypt4gh is an ValueError... try to distinguish based on message
         if "No supported encryption method" == str(error):
             raise exceptions.HttpEnvelopeDecrpytionError() from error
-        raise exceptions.HttpMalformedOrMissingEnvelopeError(user_id=user_id) from error
-    secret_id = await store_secret(file_secret=file_secret, dao=dao)
+        raise exceptions.HttpMalformedOrMissingEnvelopeError() from error
+    stored_secret = await store_secret(file_secret=file_secret, dao=dao)
     return {
         "secret": base64.b64encode(file_secret).hex(),
-        "secret_id": secret_id,
+        "secret_id": stored_secret.id,
         "offset": offset,
     }

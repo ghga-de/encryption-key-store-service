@@ -5,7 +5,7 @@
   "properties": {
     "db_connection_str": {
       "title": "Db Connection Str",
-      "default": "mongodb://localhost:27017",
+      "default": "***",
       "env_names": [
         "ekss_db_connection_str"
       ],
@@ -157,6 +157,22 @@
       "default": "encryption_key_store",
       "env_names": [
         "ekss_service_name"
+      ],
+      "type": "string"
+    },
+    "server_private_key": {
+      "title": "Server Private Key",
+      "default": "***",
+      "env_names": [
+        "ekss_server_private_key"
+      ],
+      "type": "string"
+    },
+    "server_publick_key": {
+      "title": "Server Publick Key",
+      "default": "***",
+      "env_names": [
+        "ekss_server_publick_key"
       ],
       "type": "string"
     }

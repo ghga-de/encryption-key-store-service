@@ -34,21 +34,3 @@ class FileSecretDto(FileSecretCreationDto):
     """
 
     id: str
-
-
-class GHGASecretCreationDto(BaseModel):
-    """
-    DTO wrapping base64 encoded representations of a GHGA keypair.
-    Call site needs to handle encoding/decoding.
-    """
-
-    public_key: str
-    private_key: str
-
-
-class GHGASecretDto(GHGASecretCreationDto):
-    """
-    GHGASecretCreationDto with added ID for GHGA secrets returned from MongoDB
-    """
-
-    id: str

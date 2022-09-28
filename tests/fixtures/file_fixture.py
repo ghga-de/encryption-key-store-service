@@ -22,24 +22,25 @@ import crypt4gh.lib
 import pytest_asyncio
 from ghga_service_chassis_lib.utils import big_temp_file
 
-from .ghga_secrets import generate_secrets_fixture  # noqa: F401
-from .ghga_secrets import ghga_secrets_dao_fixture  # noqa: F401
-from .ghga_secrets import GenerateSecretsFixture, GHGASecretsDaoFixture
+from .dao_keypair import dao_keypair_fixture  # noqa: F401
+from .dao_keypair import generate_keypair_fixture  # noqa: F401
+from .dao_keypair import DaoKeypairFixture, KeypairFixture
 
 
 @dataclass
 class FirstPartFixture:
     """Fixture for envelope extraction"""
 
+    client_pubkey: bytes
     content: bytes
-    ghga_secrets_dao_fixture: GHGASecretsDaoFixture
+    dao_keypair_fixture: DaoKeypairFixture
 
 
 @pytest_asyncio.fixture
 async def first_part_fixture(
     *,
-    ghga_secrets_dao_fixture: GHGASecretsDaoFixture,  # noqa: F811
-    generate_secrets_fixture: GenerateSecretsFixture,  # noqa: F811
+    dao_keypair_fixture: DaoKeypairFixture,  # noqa: F811
+    generate_keypair_fixture: KeypairFixture,  # noqa: F811
 ) -> AsyncGenerator[FirstPartFixture, None]:
     """
     Create random File, encrypt with Crypt4GH, return DAOs, secrets and first file part
@@ -49,11 +50,8 @@ async def first_part_fixture(
 
     with big_temp_file(file_size) as raw_file:
         with io.BytesIO() as encrypted_file:
-            dao = ghga_secrets_dao_fixture.dao
-            ghga_public = await dao.get_ghga_public_key(
-                id_=ghga_secrets_dao_fixture.secret_id
-            )
-            keys = [(0, generate_secrets_fixture.private_key, ghga_public)]
+            server_public = dao_keypair_fixture.keypair.public_key
+            keys = [(0, generate_keypair_fixture.private_key, server_public)]
             # rewind input file for reading
             raw_file.seek(0)
             crypt4gh.lib.encrypt(keys=keys, infile=raw_file, outfile=encrypted_file)
@@ -61,5 +59,7 @@ async def first_part_fixture(
             encrypted_file.seek(0)
             part = encrypted_file.read(part_size)
             yield FirstPartFixture(
-                content=part, ghga_secrets_dao_fixture=ghga_secrets_dao_fixture
+                client_pubkey=generate_keypair_fixture.public_key,
+                content=part,
+                dao_keypair_fixture=dao_keypair_fixture,
             )

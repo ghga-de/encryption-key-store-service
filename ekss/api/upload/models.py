@@ -23,8 +23,8 @@ class InboundEnvelopeQuery(BaseModel):
     Request object containing first file part and user ID.
     """
 
-    user_id: str
     file_part: str
+    public_key: str
 
 
 class InboundEnvelopeContent(BaseModel):

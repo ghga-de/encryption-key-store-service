@@ -14,27 +14,30 @@
 # limitations under the License.
 """Implements functionality for envelope decryption and secret storage"""
 
+import base64
 import io
 from typing import Tuple
 
 import crypt4gh.header
 
+from ekss.config import CONFIG
 from ekss.core.dao.mongo_db import MongoDbDao
+from ekss.core.dto.models import FileSecretDto
 
 
 async def extract_envelope_content(
-    *, file_part: bytes, ghga_secret: bytes
+    *, file_part: bytes, client_pubkey: bytes
 ) -> Tuple[bytes, int]:
     """
     Extract file encryption/decryption secret and file content offset from envelope
     """
     envelope_stream = io.BytesIO(file_part)
 
+    server_private_key = base64.b64decode(CONFIG.server_private_key)
     # (method - only 0 supported for now, private_key, public_key)
-    ghga_keys = [(0, ghga_secret, None)]
-    session_keys, __ = crypt4gh.header.deconstruct(
-        infile=envelope_stream,
-        keys=ghga_keys,
+    keys = [(0, server_private_key, None)]
+    session_keys, _ = crypt4gh.header.deconstruct(
+        infile=envelope_stream, keys=keys, sender_pubkey=client_pubkey
     )
 
     file_secret = session_keys[0]
@@ -43,14 +46,7 @@ async def extract_envelope_content(
     return file_secret, offset
 
 
-async def store_secret(*, file_secret: bytes, dao: MongoDbDao) -> str:
+async def store_secret(*, file_secret: bytes, dao: MongoDbDao) -> FileSecretDto:
     """Store file secret, get id"""
-    secret_id = await dao.insert_file_secret(file_secret=file_secret)
-    return secret_id
-
-
-async def get_crypt4gh_private_key(*, dao: MongoDbDao) -> bytes:
-    """Retrieve current GHGA private key"""
-    # discard the secret_id for now until we now where to cache it
-    private_key, _ = await dao.find_one_ghga_secret_key()
-    return private_key
+    stored_secret = await dao.insert_file_secret(file_secret=file_secret)
+    return stored_secret

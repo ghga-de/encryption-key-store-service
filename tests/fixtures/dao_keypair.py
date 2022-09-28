@@ -14,6 +14,7 @@
 # limitations under the License.
 """Provides a fixture around MongoDB, prefilling the DB with test data"""
 
+import base64
 from dataclasses import dataclass
 from pathlib import Path
 from tempfile import mkstemp
@@ -27,9 +28,11 @@ from testcontainers.mongodb import MongoDbContainer
 
 from ekss.core.dao.mongo_db import MongoDbDao
 
+from .config import CONFIG
+
 
 @dataclass
-class GenerateSecretsFixture:
+class KeypairFixture:
     """Fixture containing a keypair"""
 
     public_key: bytes
@@ -37,17 +40,17 @@ class GenerateSecretsFixture:
 
 
 @dataclass
-class GHGASecretsDaoFixture:
+class DaoKeypairFixture:
     """
     Fixture containing config for DAOs and the ID of the GHGA secret inserted
     """
 
     dao: MongoDbDao
-    secret_id: str
+    keypair: KeypairFixture
 
 
 @pytest_asyncio.fixture
-async def generate_secrets_fixture() -> AsyncGenerator[GenerateSecretsFixture, None]:
+async def generate_keypair_fixture() -> AsyncGenerator[KeypairFixture, None]:
     """Creates a keypair using crypt4gh"""
     # Crypt4GH always writes to file and tmp_path fixture causes permission issues
 
@@ -60,15 +63,11 @@ async def generate_secrets_fixture() -> AsyncGenerator[GenerateSecretsFixture, N
 
     Path(pk_path).unlink()
     Path(sk_path).unlink()
-
-    yield GenerateSecretsFixture(public_key=public_key, private_key=private_key)
+    yield KeypairFixture(public_key=public_key, private_key=private_key)
 
 
 @pytest_asyncio.fixture
-async def ghga_secrets_dao_fixture(
-    *,
-    generate_secrets_fixture,  # pylint: disable=redefined-outer-name
-) -> AsyncGenerator[GHGASecretsDaoFixture, None]:
+async def dao_keypair_fixture() -> AsyncGenerator[DaoKeypairFixture, None]:
     """
     Pytest fixture for tests depending on the MongoDbDaoFactory DAO with GHGA secret
     already inserted.
@@ -76,9 +75,7 @@ async def ghga_secrets_dao_fixture(
     with MongoDbContainer(image="mongo:5.0.11") as mongodb:
         config = config_from_mongodb_container(mongodb)
         dao = MongoDbDao(config=config)
-
-        secret_id = await dao.insert_ghga_keypair(
-            public_key=generate_secrets_fixture.public_key,
-            private_key=generate_secrets_fixture.private_key,
-        )
-        yield GHGASecretsDaoFixture(dao=dao, secret_id=secret_id)
+        public_key = base64.b64decode(CONFIG.server_publick_key)
+        private_key = base64.b64decode(CONFIG.server_private_key)
+        keypair = KeypairFixture(public_key=public_key, private_key=private_key)
+        yield DaoKeypairFixture(dao=dao, keypair=keypair)

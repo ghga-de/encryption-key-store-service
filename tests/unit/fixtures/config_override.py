@@ -12,23 +12,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Provides context manager for config overrides"""
 
-"""Config Parameter Modeling and Parsing"""
+import base64
 
-from ghga_service_chassis_lib.api import ApiConfigBase
-from ghga_service_chassis_lib.config import config_from_yaml
-from hexkit.providers.mongodb import MongoDbConfig
-
-
-@config_from_yaml(prefix="ekss")
-class Config(ApiConfigBase, MongoDbConfig):
-    """Config parameters and their defaults."""
-
-    service_name: str = "encryption_key_store"
-    db_name: str = "keystore"
-    db_connection_str: str = "***"
-    server_private_key: str = "***"
-    server_publick_key: str = "***"
+from ekss.config import CONFIG
 
 
-CONFIG = Config()
+class ConfigOverride:
+    """Override server private key in the context"""
+
+    def __init__(self, private_key: bytes):
+        self.original_key = ""
+        self.private_key = private_key
+
+    def __enter__(self):
+        self.original_key = CONFIG.server_private_key
+        CONFIG.server_private_key = base64.b64encode(self.private_key).decode("utf-8")
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        CONFIG.server_private_key = self.original_key

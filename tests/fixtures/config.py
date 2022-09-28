@@ -25,10 +25,10 @@ class Config(ApiConfigBase, MongoDbConfig):
     """Config parameters and their defaults."""
 
     service_name: str = "encryption_key_store"
+    db_connection_str: str = "mongodb://localhost:27017"
     db_name: str = "keystore"
-    db_connection_str: str = "***"
-    server_private_key: str = "***"
-    server_publick_key: str = "***"
+    server_private_key: str = "9iYLar4OyeBzKJY8xQ8BAiGUe49wmqRPtcj240+VmjQ="
+    server_publick_key: str = "HsKvfHsAFNGykFi/zMssay0xajoHvY30IcYPGDCXrGU="
 
 
 CONFIG = Config()

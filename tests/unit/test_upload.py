@@ -15,15 +15,15 @@
 
 """Unit tests for upload functionality"""
 
-
 import pytest
 
 from ekss.core.envelope_decryption import extract_envelope_content
 
+from ..fixtures.dao_keypair import dao_keypair_fixture  # noqa: F401
+from ..fixtures.dao_keypair import generate_keypair_fixture  # noqa: F401
 from ..fixtures.file_fixture import first_part_fixture  # noqa: F401
 from ..fixtures.file_fixture import FirstPartFixture
-from ..fixtures.ghga_secrets import generate_secrets_fixture  # noqa: F401
-from ..fixtures.ghga_secrets import ghga_secrets_dao_fixture  # noqa: F401
+from .fixtures.config_override import ConfigOverride
 
 
 @pytest.mark.asyncio
@@ -32,19 +32,16 @@ async def test_extract(
     first_part_fixture: FirstPartFixture,  # noqa: F811
 ):
     """Test envelope extraction/file secret insertion"""
-    dao = first_part_fixture.ghga_secrets_dao_fixture.dao
-    known_secret_id = first_part_fixture.ghga_secrets_dao_fixture.secret_id
+    with ConfigOverride(first_part_fixture.dao_keypair_fixture.keypair.private_key):
+        client_pubkey = first_part_fixture.client_pubkey
+        dao = first_part_fixture.dao_keypair_fixture.dao
 
-    ghga_secret, ghga_secret_id = await dao.find_one_ghga_secret_key()
+        file_secret, offset = await extract_envelope_content(
+            file_part=first_part_fixture.content,
+            client_pubkey=client_pubkey,
+        )
+        stored_secret = await dao.insert_file_secret(file_secret=file_secret)
+        result = (file_secret, stored_secret.id, offset)
 
-    # sanity check to see if we hit the wrong db, i.e. missed passing the correct config somewhere
-    assert known_secret_id == ghga_secret_id
-
-    file_secret, offset = await extract_envelope_content(
-        file_part=first_part_fixture.content, ghga_secret=ghga_secret
-    )
-    secret_id = await dao.insert_file_secret(file_secret=file_secret)
-
-    result = (file_secret, secret_id, offset)
     assert all(result)
     assert offset > 0

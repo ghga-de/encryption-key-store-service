@@ -11,5 +11,7 @@ host: 127.0.0.1
 log_level: info
 openapi_url: /openapi.json
 port: 8080
+server_private_key: '***'
+server_publick_key: '***'
 service_name: encryption_key_store
 workers: 1
