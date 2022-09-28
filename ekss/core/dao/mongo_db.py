@@ -22,11 +22,9 @@ from typing import Tuple, Type, Union
 from hexkit.protocols.dao import DaoSurrogateId
 from hexkit.providers.mongodb import MongoDbConfig, MongoDbDaoFactory
 
-from encryption_key_store.core.db_interop.file_secrets_db import (
+from ekss.core.dto.dto_models import (
     FileSecretCreationDto,
     FileSecretDto,
-)
-from encryption_key_store.core.db_interop.ghga_secrets_db import (
     GHGASecretCreationDto,
     GHGASecretDto,
 )

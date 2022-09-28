@@ -12,20 +12,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-Module containing the main FastAPI router and (optionally) top-level API enpoints.
-Additional endpoints might be structured in dedicated modules
-(each of them having a sub-router).
-"""
-
-from fastapi import FastAPI
-from ghga_service_chassis_lib.api import configure_app
-
-from encryption_key_store.api.upload.router import upload_router
-from encryption_key_store.config import CONFIG
-
-app = FastAPI()
-configure_app(app, config=CONFIG)
-
-app.include_router(upload_router)
+"""Contains all DTOs"""

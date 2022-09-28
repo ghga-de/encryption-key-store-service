@@ -20,10 +20,10 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 
-from encryption_key_store.api.main import app
-from encryption_key_store.api.upload.router import dao_injector
-from encryption_key_store.core.db_interop.ghga_secrets_db import GHGASecretCreationDto
-from encryption_key_store.core.db_interop.mongo_dao import MongoDbDao
+from ekss.api.main import app
+from ekss.api.upload.router import dao_injector
+from ekss.core.dao.mongo_db import MongoDbDao
+from ekss.core.dto.dto_models import GHGASecretCreationDto
 
 from ..fixtures.file_fixture import first_part_fixture  # noqa: F401
 from ..fixtures.file_fixture import FirstPartFixture

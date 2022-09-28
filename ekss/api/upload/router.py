@@ -19,10 +19,10 @@ import codecs
 
 from fastapi import APIRouter, Depends, status
 
-from encryption_key_store.api.upload import exceptions, models
-from encryption_key_store.config import CONFIG
-from encryption_key_store.core.db_interop.mongo_dao import MongoDbDao
-from encryption_key_store.core.envelope_decryption import (
+from ekss.api.upload import exceptions, models
+from ekss.config import CONFIG
+from ekss.core.dao.mongo_db import MongoDbDao
+from ekss.core.envelope_decryption import (
     extract_envelope_content,
     get_crypt4gh_private_key,
     store_secret,

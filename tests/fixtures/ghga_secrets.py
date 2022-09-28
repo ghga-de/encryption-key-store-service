@@ -25,7 +25,7 @@ from crypt4gh.keys.c4gh import generate as generate_keypair
 from hexkit.providers.mongodb.testutils import config_from_mongodb_container
 from testcontainers.mongodb import MongoDbContainer
 
-from encryption_key_store.core.db_interop.mongo_dao import MongoDbDao
+from ekss.core.dao.mongo_db import MongoDbDao
 
 
 @dataclass

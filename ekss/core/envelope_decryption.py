@@ -19,7 +19,7 @@ from typing import Tuple
 
 import crypt4gh.header
 
-from encryption_key_store.core.db_interop.mongo_dao import MongoDbDao
+from ekss.core.dao.mongo_db import MongoDbDao
 
 
 async def extract_envelope_content(

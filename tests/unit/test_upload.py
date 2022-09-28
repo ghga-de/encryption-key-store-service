@@ -18,7 +18,7 @@
 
 import pytest
 
-from encryption_key_store.core.envelope_decryption import extract_envelope_content
+from ekss.core.envelope_decryption import extract_envelope_content
 
 from ..fixtures.file_fixture import first_part_fixture  # noqa: F401
 from ..fixtures.file_fixture import FirstPartFixture

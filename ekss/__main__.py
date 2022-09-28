@@ -12,25 +12,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Provides DataTransferObjects to handle file encryption/decryption secrets in Mongo DB
-"""
 
-from pydantic import BaseModel
+"""Entrypoint of the package"""
 
+from ghga_service_chassis_lib.api import run_server
 
-class FileSecretCreationDto(BaseModel):
-    """
-    DTO wrapping a base64 encoded representation of a file encryption/decryption secret.
-    Call site needs to handle encoding/decoding.
-    """
-
-    file_secret: str
+from .api.main import app  # noqa: F401 pylint: disable=unused-import
+from .config import CONFIG, Config
 
 
-class FileSecretDto(FileSecretCreationDto):
-    """
-    FileSecretCreationDto with added ID for file secrets returned from MongoDB
-    """
+def run(config: Config = CONFIG):
+    """Run the service"""
+    run_server(app="ekss.__main__:app", config=config)
 
-    id: str
+
+if __name__ == "__main__":
+    run()
