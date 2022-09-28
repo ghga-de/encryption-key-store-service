@@ -21,7 +21,7 @@ from fastapi.testclient import TestClient
 
 from ekss.api.main import app
 from ekss.api.upload.router import dao_injector, private_key_injector
-from ekss.core.dao.mongo_db import MongoDbDao
+from ekss.core.dao.mongo_db import FileSecretDao
 
 from ..fixtures.dao_keypair import dao_keypair_fixture  # noqa: F401
 from ..fixtures.dao_keypair import generate_keypair_fixture  # noqa: F401
@@ -38,7 +38,7 @@ async def test_post_secrets(
 ):
     """Test request response for /secrets endpoint with valid data"""
 
-    async def dao_override() -> MongoDbDao:
+    async def dao_override() -> FileSecretDao:
         """Ad hoc DAO dependency overridde"""
         return first_part_fixture.dao_keypair_fixture.dao
 
@@ -73,7 +73,7 @@ async def test_corrupted_header(
 ):
     """Test request response for /secrets endpoint with first char replaced in envelope"""
 
-    async def dao_override() -> MongoDbDao:
+    async def dao_override() -> FileSecretDao:
         """Ad hoc DAO dependency overridde"""
         return first_part_fixture.dao_keypair_fixture.dao
 
@@ -106,7 +106,7 @@ async def test_missing_envelope(
 ):
     """Test request response for /secrets endpoint without envelope"""
 
-    async def dao_override() -> MongoDbDao:
+    async def dao_override() -> FileSecretDao:
         """Ad hoc DAO dependency overridde"""
         return first_part_fixture.dao_keypair_fixture.dao
 

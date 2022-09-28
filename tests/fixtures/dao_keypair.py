@@ -26,7 +26,7 @@ from crypt4gh.keys.c4gh import generate as generate_keypair
 from hexkit.providers.mongodb.testutils import config_from_mongodb_container
 from testcontainers.mongodb import MongoDbContainer
 
-from ekss.core.dao.mongo_db import MongoDbDao
+from ekss.core.dao.mongo_db import FileSecretDao
 
 from .config import CONFIG
 
@@ -45,7 +45,7 @@ class DaoKeypairFixture:
     Fixture containing config for DAOs and the ID of the GHGA secret inserted
     """
 
-    dao: MongoDbDao
+    dao: FileSecretDao
     keypair: KeypairFixture
 
 
@@ -74,7 +74,7 @@ async def dao_keypair_fixture() -> AsyncGenerator[DaoKeypairFixture, None]:
     """
     with MongoDbContainer(image="mongo:5.0.11") as mongodb:
         config = config_from_mongodb_container(mongodb)
-        dao = MongoDbDao(config=config)
+        dao = FileSecretDao(config=config)
         public_key = base64.b64decode(CONFIG.server_publick_key)
         private_key = base64.b64decode(CONFIG.server_private_key)
         keypair = KeypairFixture(public_key=public_key, private_key=private_key)

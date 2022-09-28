@@ -21,7 +21,7 @@ from fastapi import APIRouter, Depends, status
 
 from ekss.api.upload import exceptions, models
 from ekss.config import CONFIG
-from ekss.core.dao.mongo_db import MongoDbDao
+from ekss.core.dao.mongo_db import FileSecretDao
 from ekss.core.envelope_decryption import extract_envelope_content, store_secret
 
 upload_router = APIRouter()
@@ -38,9 +38,9 @@ ERROR_RESPONSES = {
 }
 
 
-async def dao_injector() -> MongoDbDao:
+async def dao_injector() -> FileSecretDao:
     """Define dao as dependency to override during testing"""
-    return MongoDbDao(config=CONFIG)
+    return FileSecretDao(config=CONFIG)
 
 
 async def private_key_injector() -> str:
@@ -63,7 +63,7 @@ async def private_key_injector() -> str:
 async def post_encryption_secrets(
     *,
     envelope_query: models.InboundEnvelopeQuery,
-    dao: MongoDbDao = Depends(dao_injector),
+    dao: FileSecretDao = Depends(dao_injector),
     server_test_key: str = Depends(private_key_injector)
 ):
     """Extract file encryption/decryption secret, create secret ID and extract

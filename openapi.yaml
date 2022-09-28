@@ -60,12 +60,7 @@ components:
       type: object
     HttpMalformedOrMissingEnvelopeErrorData:
       description: Model for exception data
-      properties:
-        user_id:
-          title: User Id
-          type: string
-      required:
-      - user_id
+      properties: {}
       title: HttpEnvelopeDecrpytionErrorData
       type: object
     InboundEnvelopeContent:
@@ -98,12 +93,12 @@ components:
         file_part:
           title: File Part
           type: string
-        user_id:
-          title: User Id
+        public_key:
+          title: Public Key
           type: string
       required:
-      - user_id
       - file_part
+      - public_key
       title: HttpEnvelopeDecrpytionErrorData
       type: object
     ValidationError:

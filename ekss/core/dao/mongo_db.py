@@ -25,7 +25,7 @@ from hexkit.providers.mongodb import MongoDbConfig, MongoDbDaoFactory
 from ekss.core.dto.models import FileSecretCreationDto, FileSecretDto
 
 
-class MongoDbDao:
+class FileSecretDao:
     """abstractions over file secret/GHGA secret DAOs"""
 
     def __init__(self, config: MongoDbConfig):
