@@ -20,7 +20,7 @@ from pydantic import BaseModel
 
 class InboundEnvelopeQuery(BaseModel):
     """
-    Request object containing first file part and user ID.
+    Request object containing first file part and a public key.
     """
 
     file_part: str
