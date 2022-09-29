@@ -14,7 +14,6 @@
 # limitations under the License.
 """Provides a fixture around MongoDB, prefilling the DB with test data"""
 
-import base64
 from dataclasses import dataclass
 from pathlib import Path
 from tempfile import mkstemp
@@ -28,8 +27,6 @@ from testcontainers.mongodb import MongoDbContainer
 
 from ekss.core.dao.mongo_db import FileSecretDao
 
-from .config import CONFIG
-
 
 @dataclass
 class KeypairFixture:
@@ -37,16 +34,6 @@ class KeypairFixture:
 
     public_key: bytes
     private_key: bytes
-
-
-@dataclass
-class DaoKeypairFixture:
-    """
-    Fixture containing config for DAOs and the ID of the GHGA secret inserted
-    """
-
-    dao: FileSecretDao
-    keypair: KeypairFixture
 
 
 @pytest_asyncio.fixture
@@ -67,15 +54,11 @@ async def generate_keypair_fixture() -> AsyncGenerator[KeypairFixture, None]:
 
 
 @pytest_asyncio.fixture
-async def dao_keypair_fixture() -> AsyncGenerator[DaoKeypairFixture, None]:
+async def dao_fixture() -> AsyncGenerator[FileSecretDao, None]:
     """
-    Pytest fixture for tests depending on the MongoDbDaoFactory DAO with GHGA secret
-    already inserted.
+    Pytest fixture for tests depending on the MongoDbDaoFactory DAO
     """
     with MongoDbContainer(image="mongo:5.0.11") as mongodb:
         config = config_from_mongodb_container(mongodb)
         dao = FileSecretDao(config=config)
-        public_key = base64.b64decode(CONFIG.server_publick_key)
-        private_key = base64.b64decode(CONFIG.server_private_key)
-        keypair = KeypairFixture(public_key=public_key, private_key=private_key)
-        yield DaoKeypairFixture(dao=dao, keypair=keypair)
+        yield dao

@@ -43,11 +43,6 @@ async def dao_injector() -> FileSecretDao:
     return FileSecretDao(config=CONFIG)
 
 
-async def private_key_injector() -> str:
-    """Injector to replace server private key in tests"""
-    return ""
-
-
 @upload_router.post(
     "/secrets",
     summary="Extract file encryption/decryption secret and file content offset from enevelope",
@@ -64,13 +59,9 @@ async def post_encryption_secrets(
     *,
     envelope_query: models.InboundEnvelopeQuery,
     dao: FileSecretDao = Depends(dao_injector),
-    server_test_key: str = Depends(private_key_injector)
 ):
     """Extract file encryption/decryption secret, create secret ID and extract
     file content offset"""
-    # overwrite for tests
-    if server_test_key:
-        CONFIG.server_private_key = server_test_key
     # Mypy false positives
     client_pubkey = base64.b64decode(
         codecs.decode(envelope_query.public_key, "hex"),  # type: ignore

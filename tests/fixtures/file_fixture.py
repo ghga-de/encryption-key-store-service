@@ -14,6 +14,7 @@
 # limitations under the License.
 
 
+import base64
 import io
 from dataclasses import dataclass
 from typing import AsyncGenerator
@@ -22,9 +23,12 @@ import crypt4gh.lib
 import pytest_asyncio
 from ghga_service_chassis_lib.utils import big_temp_file
 
-from .dao_keypair import dao_keypair_fixture  # noqa: F401
+from ekss.core.dao.mongo_db import FileSecretDao
+
+from .config import CONFIG
+from .dao_keypair import dao_fixture  # noqa: F401
 from .dao_keypair import generate_keypair_fixture  # noqa: F401
-from .dao_keypair import DaoKeypairFixture, KeypairFixture
+from .dao_keypair import KeypairFixture
 
 
 @dataclass
@@ -33,13 +37,13 @@ class FirstPartFixture:
 
     client_pubkey: bytes
     content: bytes
-    dao_keypair_fixture: DaoKeypairFixture
+    dao: FileSecretDao
 
 
 @pytest_asyncio.fixture
 async def first_part_fixture(
     *,
-    dao_keypair_fixture: DaoKeypairFixture,  # noqa: F811
+    dao_fixture: FileSecretDao,  # noqa: F811
     generate_keypair_fixture: KeypairFixture,  # noqa: F811
 ) -> AsyncGenerator[FirstPartFixture, None]:
     """
@@ -50,8 +54,8 @@ async def first_part_fixture(
 
     with big_temp_file(file_size) as raw_file:
         with io.BytesIO() as encrypted_file:
-            server_public = dao_keypair_fixture.keypair.public_key
-            keys = [(0, generate_keypair_fixture.private_key, server_public)]
+            server_pubkey = base64.b64decode(CONFIG.server_publick_key)
+            keys = [(0, generate_keypair_fixture.private_key, server_pubkey)]
             # rewind input file for reading
             raw_file.seek(0)
             crypt4gh.lib.encrypt(keys=keys, infile=raw_file, outfile=encrypted_file)
@@ -61,5 +65,5 @@ async def first_part_fixture(
             yield FirstPartFixture(
                 client_pubkey=generate_keypair_fixture.public_key,
                 content=part,
-                dao_keypair_fixture=dao_keypair_fixture,
+                dao=dao_fixture,
             )

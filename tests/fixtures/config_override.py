@@ -14,21 +14,25 @@
 # limitations under the License.
 """Provides context manager for config overrides"""
 
-import base64
-
 from ekss.config import CONFIG
+
+from .config import CONFIG as TEST_CONFIG
 
 
 class ConfigOverride:
     """Override server private key in the context"""
 
-    def __init__(self, private_key: bytes):
-        self.original_key = ""
-        self.private_key = private_key
+    def __init__(self):
+        self.original_private_key = ""
+        self.original_pubkey = ""
 
     def __enter__(self):
-        self.original_key = CONFIG.server_private_key
-        CONFIG.server_private_key = base64.b64encode(self.private_key).decode("utf-8")
+        self.original_private_key = CONFIG.server_private_key
+        self.original_pubkey = CONFIG.server_publick_key
+
+        CONFIG.server_private_key = TEST_CONFIG.server_private_key
+        CONFIG.server_publick_key = TEST_CONFIG.server_private_key
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        CONFIG.server_private_key = self.original_key
+        CONFIG.server_private_key = self.original_private_key
+        CONFIG.server_publick_key = self.original_pubkey
