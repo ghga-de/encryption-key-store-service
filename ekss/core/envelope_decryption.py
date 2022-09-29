@@ -21,8 +21,6 @@ from typing import Tuple
 import crypt4gh.header
 
 from ekss.config import CONFIG
-from ekss.core.dao.mongo_db import FileSecretDao
-from ekss.core.dto.models import FileSecretDto
 
 
 async def extract_envelope_content(
@@ -44,9 +42,3 @@ async def extract_envelope_content(
     offset = envelope_stream.tell()
 
     return file_secret, offset
-
-
-async def store_secret(*, file_secret: bytes, dao: FileSecretDao) -> FileSecretDto:
-    """Store file secret, get id"""
-    stored_secret = await dao.insert_file_secret(file_secret=file_secret)
-    return stored_secret

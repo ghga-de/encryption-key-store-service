@@ -22,7 +22,7 @@ from fastapi import APIRouter, Depends, status
 from ekss.api.upload import exceptions, models
 from ekss.config import CONFIG
 from ekss.core.dao.mongo_db import FileSecretDao
-from ekss.core.envelope_decryption import extract_envelope_content, store_secret
+from ekss.core.envelope_decryption import extract_envelope_content
 
 upload_router = APIRouter()
 
@@ -78,7 +78,7 @@ async def post_encryption_secrets(
         if "No supported encryption method" == str(error):
             raise exceptions.HttpEnvelopeDecrpytionError() from error
         raise exceptions.HttpMalformedOrMissingEnvelopeError() from error
-    stored_secret = await store_secret(file_secret=file_secret, dao=dao)
+    stored_secret = await dao.insert_file_secret(file_secret=file_secret)
     return {
         "secret": base64.b64encode(file_secret).hex(),
         "secret_id": stored_secret.id,

@@ -17,7 +17,7 @@
 
 import pytest
 
-from ekss.core.envelope_decryption import extract_envelope_content, store_secret
+from ekss.core.envelope_decryption import extract_envelope_content
 
 from ..fixtures.config_override import ConfigOverride
 from ..fixtures.dao_keypair import dao_fixture  # noqa: F401
@@ -40,7 +40,8 @@ async def test_extract(
             file_part=first_part_fixture.content,
             client_pubkey=client_pubkey,
         )
-        stored_secret = await store_secret(file_secret=file_secret, dao=dao)
+
+        stored_secret = await dao.insert_file_secret(file_secret=file_secret)
         result = (file_secret, stored_secret.id, offset)
 
     assert all(result)

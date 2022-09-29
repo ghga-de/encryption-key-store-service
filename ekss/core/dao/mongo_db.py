@@ -31,7 +31,7 @@ class FileSecretDao:
     def __init__(self, config: MongoDbConfig):
         self.config = config
 
-    async def get_dao(
+    async def _get_dao(
         self,
         *,
         name: str,
@@ -47,9 +47,9 @@ class FileSecretDao:
             id_field="id",
         )
 
-    async def get_file_secret_dao(self) -> DaoSurrogateId:
+    async def _get_file_secret_dao(self) -> DaoSurrogateId:
         """Instantiate a DAO for file secret interactions"""
-        return await self.get_dao(
+        return await self._get_dao(
             name="file_secrets",
             dto_model=FileSecretDto,
             dto_creation_model=FileSecretCreationDto,
@@ -57,7 +57,7 @@ class FileSecretDao:
 
     async def get_file_secret(self, *, id_: str) -> bytes:
         """Retrieve file secret from db"""
-        dao = await self.get_file_secret_dao()
+        dao = await self._get_file_secret_dao()
         response = await dao.get(id_=id_)
         return base64.b64decode(response.file_secret)
 
@@ -65,6 +65,6 @@ class FileSecretDao:
         """Encode and insert file secret into db"""
         file_secret = base64.b64encode(file_secret)
         file_secret_dto = FileSecretCreationDto(file_secret=file_secret)
-        dao = await self.get_file_secret_dao()
+        dao = await self._get_file_secret_dao()
         response = await dao.insert(file_secret_dto)
         return response
