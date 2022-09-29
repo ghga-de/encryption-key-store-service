@@ -40,8 +40,7 @@ async def test_extract(
             file_part=first_part_fixture.content,
             client_pubkey=client_pubkey,
         )
-        stored_secret = await store_secret(file_secret=file_secret[::-1], dao=dao)
-        # stored_secret = await store_secret(file_secret=file_secret, dao=dao)
+        stored_secret = await store_secret(file_secret=file_secret, dao=dao)
         result = (file_secret, stored_secret.id, offset)
 
     assert all(result)
