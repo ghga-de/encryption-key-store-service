@@ -88,7 +88,7 @@ components:
       title: HttpEnvelopeDecrpytionErrorData
       type: object
     InboundEnvelopeQuery:
-      description: Request object containing first file part and user ID.
+      description: Request object containing first file part and a public key.
       properties:
         file_part:
           title: File Part
