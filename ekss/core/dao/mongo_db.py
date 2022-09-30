@@ -17,12 +17,19 @@ Provides DAOs for insertion/retrieval to/from MongoDB and wrappers around this f
 """
 
 import base64
+import uuid
 from typing import Type
 
 from hexkit.protocols.dao import DaoSurrogateId
 from hexkit.providers.mongodb import MongoDbConfig, MongoDbDaoFactory
 
 from ekss.core.dto.models import FileSecretCreationDto, FileSecretDto
+
+
+async def uuid_generator():
+    """ID generator for DAO using SurrogateID DTOs"""
+    while True:
+        yield str(uuid.uuid4())
 
 
 class FileSecretDao:
@@ -45,6 +52,7 @@ class FileSecretDao:
             dto_model=dto_model,
             dto_creation_model=dto_creation_model,
             id_field="id",
+            id_generator=uuid_generator(),
         )
 
     async def _get_file_secret_dao(self) -> DaoSurrogateId:
