@@ -18,7 +18,6 @@
 from ghga_service_chassis_lib.api import ApiConfigBase
 from ghga_service_chassis_lib.config import config_from_yaml
 from hexkit.providers.mongodb import MongoDbConfig
-from pydantic import SecretStr
 
 
 @config_from_yaml(prefix="ekss")
@@ -27,8 +26,8 @@ class Config(ApiConfigBase, MongoDbConfig):
 
     service_name: str = "encryption_key_store"
     db_name: str = "keystore"
-    db_connection_str: str = SecretStr("***")
-    server_private_key: str = SecretStr("***")
+    db_connection_str: str = "***"
+    server_private_key: str = "***"
     server_publick_key: str = "***"
 
 
