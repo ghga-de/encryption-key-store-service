@@ -22,7 +22,7 @@ from typing import Type
 from hexkit.protocols.dao import DaoSurrogateId
 from hexkit.providers.mongodb import MongoDbConfig, MongoDbDaoFactory
 
-from ekss.core.dto.models import FileSecretCreationDto, FileSecretDto
+from ekss.core.dao.dto_models import FileSecretCreationDto, FileSecretDto
 
 
 class FileSecretDao:
