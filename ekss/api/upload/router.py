@@ -64,9 +64,9 @@ async def post_encryption_secrets(
     file content offset"""
     # Mypy false positives
     client_pubkey = base64.b64decode(
-        codecs.decode(envelope_query.public_key, "hex"),  # type: ignore
+        codecs.decode(envelope_query.public_key, "hex"),
     )
-    file_part = base64.b64decode(codecs.decode(envelope_query.file_part, "hex"))  # type: ignore
+    file_part = base64.b64decode(codecs.decode(envelope_query.file_part, "hex"))
     try:
 
         file_secret, offset = await extract_envelope_content(
