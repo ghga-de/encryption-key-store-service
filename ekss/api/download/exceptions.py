@@ -12,22 +12,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Defines exceptions that can occur during envelope data extraction"""
 
-"""
-Module containing the main FastAPI router and (optionally) top-level API enpoints.
-Additional endpoints might be structured in dedicated modules
-(each of them having a sub-router).
-"""
+from httpyexpect.server import HttpCustomExceptionBase
+from pydantic import BaseModel
 
-from fastapi import FastAPI
-from ghga_service_chassis_lib.api import configure_app
 
-from ekss.api.download.router import download_router
-from ekss.api.upload.router import upload_router
-from ekss.config import CONFIG
+class HttpSecretNotFoundError(HttpCustomExceptionBase):
+    """Thrown when no secret with the given id could be found"""
 
-app = FastAPI()
-configure_app(app, config=CONFIG)
+    exception_id = "secretNotFoundError"
 
-app.include_router(upload_router)
-app.include_router(download_router)
+    class DataModel(BaseModel):
+        """Model for exception data"""
+
+    def __init__(self, *, status_code: int = 404):
+        """Construct message and init the exception."""
+        super().__init__(
+            status_code=status_code,
+            description=("The secret for the given id was not found."),
+            data={},
+        )

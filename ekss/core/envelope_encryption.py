@@ -13,21 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-Module containing the main FastAPI router and (optionally) top-level API enpoints.
-Additional endpoints might be structured in dedicated modules
-(each of them having a sub-router).
-"""
+"""Implements functionality for envelope encrytion"""
 
-from fastapi import FastAPI
-from ghga_service_chassis_lib.api import configure_app
+import base64
 
-from ekss.api.download.router import download_router
-from ekss.api.upload.router import upload_router
+import crypt4gh.header
+
 from ekss.config import CONFIG
 
-app = FastAPI()
-configure_app(app, config=CONFIG)
 
-app.include_router(upload_router)
-app.include_router(download_router)
+async def get_envelope(*, file_secret: bytes, client_pubkey: bytes) -> bytes:
+    """
+    Gather file encryption/decryption secret and assemble a crypt4gh envelope using the
+    servers private and the clients public key
+    """
+
+    server_private_key = base64.b64decode(CONFIG.server_private_key)
+    keys = [(0, server_private_key, client_pubkey)]
+    header_content = crypt4gh.header.make_packet_data_enc(0, file_secret)
+    header_packets = crypt4gh.header.encrypt(header_content, keys)
+    header_bytes = crypt4gh.header.serialize(header_packets)
+
+    return header_bytes
