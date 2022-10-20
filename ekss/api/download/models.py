@@ -24,4 +24,4 @@ class OutboundEnvelopeContent(BaseModel):
     clients public key and the servers private key
     """
 
-    header_envelope: str
+    content: str

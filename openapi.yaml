@@ -134,11 +134,11 @@ components:
 
         clients public key and the servers private key'
       properties:
-        header_envelope:
-          title: Header Envelope
+        content:
+          title: Content
           type: string
       required:
-      - header_envelope
+      - content
       title: HttpEnvelopeDecrpytionErrorData
       type: object
     ValidationError:
