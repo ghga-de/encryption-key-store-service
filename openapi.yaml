@@ -242,4 +242,5 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
-      summary: Get Header Envelope
+      summary: Get personalized envelope containing Crypt4GH file encryption/decryption
+        key
