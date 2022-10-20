@@ -20,9 +20,27 @@ import base64
 import crypt4gh.header
 
 from ekss.config import CONFIG
+from ekss.core.dao.mongo_db import FileSecretDao
 
 
-async def get_envelope(*, file_secret: bytes, client_pubkey: bytes) -> bytes:
+async def get_envelope(
+    *,
+    secret_id: str,
+    client_pubkey: bytes,
+    dao: FileSecretDao,
+) -> bytes:
+    """
+    Calls the database and then calls a function to assemble a database
+    """
+    file_secret = await dao.get_file_secret(id_=secret_id)
+    header_envelope = await (
+        create_envelope(file_secret=file_secret, client_pubkey=client_pubkey)
+    )
+
+    return header_envelope
+
+
+async def create_envelope(*, file_secret: bytes, client_pubkey: bytes) -> bytes:
     """
     Gather file encryption/decryption secret and assemble a crypt4gh envelope using the
     servers private and the clients public key

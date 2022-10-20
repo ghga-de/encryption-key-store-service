@@ -28,20 +28,14 @@ from .dao_keypair import generate_keypair_fixture  # noqa: F401
 from .dao_keypair import KeypairFixture
 
 
-async def insert_in_database(*, secret: bytes, dao: FileSecretDao):
-    """
-    Prepopulate Database with one secret, return id
-    """
-    stored_secret = await dao.insert_file_secret(file_secret=secret)
-    return stored_secret.id
-
-
 @dataclass
 class EnvelopeFixture:
     """Fixture for GET call to create an envelope"""
 
     client_pk: bytes
+    client_sk: bytes
     secret_id: str
+    secret: bytes
     dao: FileSecretDao
 
 
@@ -62,6 +56,8 @@ async def envelope_fixture(
 
     yield EnvelopeFixture(
         client_pk=generate_keypair_fixture.public_key,
+        client_sk=generate_keypair_fixture.private_key,
         secret_id=stored_secret.id,
+        secret=secret,
         dao=dao_fixture,
     )

@@ -64,13 +64,13 @@ async def get_header_envelope(
     )
 
     try:
-        file_secret = await dao.get_file_secret(id_=secret_id)
+        header_envelope = await get_envelope(
+            secret_id=secret_id,
+            client_pubkey=client_pubkey,
+            dao=dao,
+        )
     except ResourceNotFoundError as error:
         raise exceptions.HttpSecretNotFoundError() from error
-
-    header_envelope = await (
-        get_envelope(file_secret=file_secret, client_pubkey=client_pubkey)
-    )
 
     return {
         "content": base64.b64encode(header_envelope).hex(),

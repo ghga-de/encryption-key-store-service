@@ -16,12 +16,15 @@
 
 import base64
 import codecs
+import io
 
+import crypt4gh.header
 import pytest
 from fastapi.testclient import TestClient
 
 from ekss.api.download.router import dao_injector
 from ekss.api.main import app
+from ekss.config import CONFIG
 from ekss.core.dao.mongo_db import FileSecretDao
 
 from ..fixtures.dao_keypair import dao_fixture  # noqa: F401
@@ -51,6 +54,13 @@ async def test_get_envelope(
     body = response.json()
     content = base64.b64decode(codecs.decode(body["content"], "hex"))
     assert content
+    keys = [(0, envelope_fixture.client_sk, None)]
+    session_keys, _ = crypt4gh.header.deconstruct(
+        infile=io.BytesIO(content),
+        keys=keys,
+        sender_pubkey=base64.b64decode(CONFIG.server_public_key),
+    )
+    assert session_keys[0] == envelope_fixture.secret
 
 
 @pytest.mark.asyncio
