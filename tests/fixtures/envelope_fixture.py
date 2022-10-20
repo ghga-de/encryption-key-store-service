@@ -62,6 +62,6 @@ async def envelope_fixture(
 
     yield EnvelopeFixture(
         client_pk=generate_keypair_fixture.public_key,
-        secret_id=stored_secret,
+        secret_id=stored_secret.id,
         dao=dao_fixture,
     )

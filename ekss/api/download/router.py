@@ -41,7 +41,7 @@ async def dao_injector() -> FileSecretDao:
 
 @download_router.get(
     "/secrets/{secret_id}/envelopes/{client_pk}",
-    summary="",
+    summary="Get personalized envelope containing Crypt4GH file encryption/decryption key",
     operation_id="getEncryptionData",
     status_code=status.HTTP_200_OK,
     response_model=models.OutboundEnvelopeContent,
