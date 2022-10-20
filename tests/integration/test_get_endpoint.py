@@ -20,8 +20,8 @@ import codecs
 import pytest
 from fastapi.testclient import TestClient
 
+from ekss.api.download.router import dao_injector
 from ekss.api.main import app
-from ekss.api.upload.router import dao_injector
 from ekss.core.dao.mongo_db import FileSecretDao
 
 from ..fixtures.dao_keypair import dao_fixture  # noqa: F401

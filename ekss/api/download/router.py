@@ -18,6 +18,7 @@ import base64
 import codecs
 
 from fastapi import APIRouter, Depends, status
+from hexkit.protocols.dao import ResourceNotFoundError
 
 from ekss.api.download import exceptions, models
 from ekss.config import CONFIG
@@ -62,15 +63,15 @@ async def get_header_envelope(
         codecs.decode(client_pk, "hex"),
     )
 
-    file_secret = await dao.get_file_secret(id_=secret_id)
-
-    if not file_secret:
-        raise exceptions.HttpSecretNotFoundError()
+    try:
+        file_secret = await dao.get_file_secret(id_=secret_id)
+    except ResourceNotFoundError as error:
+        raise exceptions.HttpSecretNotFoundError() from error
 
     header_envelope = await (
         get_envelope(file_secret=file_secret, client_pubkey=client_pubkey)
     )
 
     return {
-        "header_envelope": header_envelope,
+        "content": base64.b64encode(header_envelope).hex(),
     }
