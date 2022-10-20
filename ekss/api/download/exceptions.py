@@ -30,6 +30,6 @@ class HttpSecretNotFoundError(HttpCustomExceptionBase):
         """Construct message and init the exception."""
         super().__init__(
             status_code=status_code,
-            description=("The secret for the given id was not found."),
+            description="The secret for the given id was not found.",
             data={},
         )
