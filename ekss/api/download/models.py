@@ -21,7 +21,7 @@ from pydantic import BaseModel
 class OutboundEnvelopeContent(BaseModel):
     """
     Contains the header envelope, which contains the file secret encrypted with the
-    clients public key and the servers private key
+    client's public key and the server's private key
     """
 
     content: str
