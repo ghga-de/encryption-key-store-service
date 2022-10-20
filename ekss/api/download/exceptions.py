@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Defines exceptions that can occur during envelope data extraction"""
+"""Defines exceptions that can occur during envelope creation"""
 
 from httpyexpect.server import HttpCustomExceptionBase
 from pydantic import BaseModel
