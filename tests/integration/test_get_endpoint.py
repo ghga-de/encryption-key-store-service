@@ -47,7 +47,7 @@ async def test_get_envelope(
 
     app.dependency_overrides[dao_injector] = dao_override
     secret_id = envelope_fixture.secret_id
-    client_pk = base64.b64encode(envelope_fixture.client_pk).decode("utf-8")
+    client_pk = base64.urlsafe_b64encode(envelope_fixture.client_pk).decode("utf-8")
     response = client.get(url=f"/secrets/{secret_id}/envelopes/{client_pk}")
     assert response.status_code == 200
     body = response.json()
@@ -75,7 +75,7 @@ async def test_wrong_id(
 
     app.dependency_overrides[dao_injector] = dao_override
     secret_id = "wrong_id"
-    client_pk = base64.b64encode(envelope_fixture.client_pk).decode("utf-8")
+    client_pk = base64.urlsafe_b64encode(envelope_fixture.client_pk).decode("utf-8")
     response = client.get(url=f"/secrets/{secret_id}/envelopes/{client_pk}")
     assert response.status_code == 404
     body = response.json()

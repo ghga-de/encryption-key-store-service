@@ -61,7 +61,7 @@ async def get_header_envelope(
     try:
         header_envelope = await get_envelope(
             secret_id=secret_id,
-            client_pubkey=base64.b64decode(client_pk),
+            client_pubkey=base64.urlsafe_b64decode(client_pk),
             dao=dao,
         )
     except ResourceNotFoundError as error:
