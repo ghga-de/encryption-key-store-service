@@ -30,7 +30,7 @@ async def get_envelope(
     dao: FileSecretDao,
 ) -> bytes:
     """
-    Calls the database and then calls a function to assemble a database
+    Calls the database and then calls a function to assemble an envelope
     """
     file_secret = await dao.get_file_secret(id_=secret_id)
     header_envelope = await (
