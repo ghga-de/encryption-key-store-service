@@ -40,8 +40,6 @@ services:
 
   vault:
     image: hashicorp/vault:1.11.4
-    expose:
-      - 8200
     ports:
       - "8200:8200"
     environment:
