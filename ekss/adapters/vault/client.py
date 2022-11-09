@@ -20,7 +20,7 @@ from typing import Union
 import hvac
 
 
-class VaultClient:
+class VaultClient(hvac.Client):
     """Wrapper around hvac client delegating actions"""
 
     def __init__(  # pylint: disable=too-many-arguments
@@ -31,7 +31,7 @@ class VaultClient:
         verify: Union[bool, str] = True,
         timeout: int = 15,
     ):
-        self.client = hvac.Client(
+        super().__init__(
             url=url,
             namespace=namespace,
             token=token,

@@ -16,14 +16,11 @@
 
 import pytest
 
-from ekss.adapters.vault.client import VaultClient
 from tests.fixtures.vault import vault_fixture  # noqa: F401
-from tests.fixtures.vault import VAULT_NAMESPACE, VAULT_TOKEN, VaultFixture
+from tests.fixtures.vault import VaultFixture
 
 
 @pytest.mark.asyncio
 async def test_connection(vault_fixture: VaultFixture):  # noqa: F811
     """Test if container is up and reachable"""
-    url = f"http://{vault_fixture.url}:{vault_fixture.port}"
-    vault_client = VaultClient(url=url, token=VAULT_TOKEN, namespace=VAULT_NAMESPACE)
-    assert vault_client.client.is_authenticated()
+    assert vault_fixture.client.is_authenticated()

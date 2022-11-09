@@ -21,6 +21,8 @@ from typing import AsyncGenerator
 import pytest_asyncio
 from testcontainers.general import DockerContainer
 
+from ekss.adapters.vault.client import VaultClient
+
 VAULT_ADDR = "http://0.0.0.0:8200"
 VAULT_NAMESPACE = "vault"
 VAULT_TOKEN = "dev-token"
@@ -29,10 +31,9 @@ VAULT_PORT = 8200
 
 @dataclass
 class VaultFixture:
-    """Information about the running server needed by the client"""
+    """Contains initialized vault client"""
 
-    url: str
-    port: int
+    client: VaultClient
 
 
 @pytest_asyncio.fixture
@@ -45,9 +46,12 @@ async def vault_fixture() -> AsyncGenerator[VaultFixture, None]:
         .with_env("VAULT_DEV_ROOT_TOKEN_ID", VAULT_TOKEN)
     )
     with vault_container:
-        url = vault_container.get_container_host_ip()
+        host = vault_container.get_container_host_ip()
         port = vault_container.get_exposed_port(VAULT_PORT)
-        # Test fails without wait time
-        # one can pass a requests.Session to the hvac client -> Enable retry logic there
+        host = f"http://{host}:{port}"
+        vault_client = VaultClient(
+            url=host, token=VAULT_TOKEN, namespace=VAULT_NAMESPACE
+        )
+        # necessary for now
         time.sleep(1)
-        yield VaultFixture(url=url, port=port)
+        yield VaultFixture(client=vault_client)
