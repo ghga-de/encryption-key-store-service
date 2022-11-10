@@ -14,13 +14,16 @@
 # limitations under the License.
 """Test HashiCorp Vault interaction"""
 
-import pytest
+import os
 
 from tests.fixtures.vault import vault_fixture  # noqa: F401
 from tests.fixtures.vault import VaultFixture
 
 
-@pytest.mark.asyncio
-async def test_connection(vault_fixture: VaultFixture):  # noqa: F811
+def test_connection(vault_fixture: VaultFixture):  # noqa: F811
     """Test if container is up and reachable"""
     assert vault_fixture.client.is_authenticated()
+    secret = os.urandom(32)
+    key = vault_fixture.client.store_secret(secret=secret)
+    stored_secret = vault_fixture.client.get_secret(key=key)
+    assert secret == stored_secret

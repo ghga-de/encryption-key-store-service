@@ -16,12 +16,12 @@
 
 import time
 from dataclasses import dataclass
-from typing import AsyncGenerator
+from typing import Generator
 
-import pytest_asyncio
+import pytest
 from testcontainers.general import DockerContainer
 
-from ekss.adapters.vault.client import VaultClient
+from ekss.adapters.outbound.vault.client import VaultClient
 
 VAULT_ADDR = "http://0.0.0.0:8200"
 VAULT_NAMESPACE = "vault"
@@ -36,8 +36,8 @@ class VaultFixture:
     client: VaultClient
 
 
-@pytest_asyncio.fixture
-async def vault_fixture() -> AsyncGenerator[VaultFixture, None]:
+@pytest.fixture
+def vault_fixture() -> Generator[VaultFixture, None, None]:
     """Generate preconfigured test container"""
     vault_container = (
         DockerContainer(image="hashicorp/vault:1.11.4")
@@ -53,5 +53,5 @@ async def vault_fixture() -> AsyncGenerator[VaultFixture, None]:
             url=host, token=VAULT_TOKEN, namespace=VAULT_NAMESPACE
         )
         # necessary for now
-        time.sleep(1)
+        time.sleep(2)
         yield VaultFixture(client=vault_client)

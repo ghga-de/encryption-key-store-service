@@ -12,29 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Provides client side functionality for interaction with HashiCorp Vault"""
+"""Exceptions wrapping HashiCorp Vault errors """
 
 
-from typing import Union
+class VaultException(RuntimeError):
+    """Baseclass for for errors encountered when interacting with HashiCorp Vault"""
 
-import hvac
+
+class SecretInsertionError(VaultException):
+    """Wrapper for errors encountered on secret insertion"""
 
 
-class VaultClient(hvac.Client):
-    """Wrapper around hvac client delegating actions"""
-
-    def __init__(  # pylint: disable=too-many-arguments
-        self,
-        url: str,
-        token: str,
-        namespace: str = "vault",
-        verify: Union[bool, str] = True,
-        timeout: int = 15,
-    ):
-        super().__init__(
-            url=url,
-            namespace=namespace,
-            token=token,
-            verify=verify,
-            timeout=timeout,
-        )
+class SecrertRetrievalError(VaultException):
+    """Wrapper for errors encountered on secret retrieval"""
