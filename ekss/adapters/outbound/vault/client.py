@@ -53,7 +53,7 @@ class VaultAdapter:
         Key should be a UUID4 returned by store_secret on insertion
         """
         try:
-            response = self.client.secrets.kv.read_secret_version(
+            response = self._client.secrets.kv.read_secret_version(
                 path=f"{prefix}/{key}"
             )
         except hvac.exceptions.InvalidRequest as exc:
