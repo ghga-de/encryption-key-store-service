@@ -18,10 +18,11 @@ import time
 from dataclasses import dataclass
 from typing import Generator
 
+import hvac
 import pytest
 from testcontainers.general import DockerContainer
 
-from ekss.adapters.outbound.vault.client import VaultClient
+from ekss.adapters.outbound.vault.client import VaultAdapter
 
 VAULT_ADDR = "http://0.0.0.0:8200"
 VAULT_NAMESPACE = "vault"
@@ -33,7 +34,7 @@ VAULT_PORT = 8200
 class VaultFixture:
     """Contains initialized vault client"""
 
-    client: VaultClient
+    adapter: VaultAdapter
 
 
 @pytest.fixture
@@ -49,9 +50,8 @@ def vault_fixture() -> Generator[VaultFixture, None, None]:
         host = vault_container.get_container_host_ip()
         port = vault_container.get_exposed_port(VAULT_PORT)
         host = f"http://{host}:{port}"
-        vault_client = VaultClient(
-            url=host, token=VAULT_TOKEN, namespace=VAULT_NAMESPACE
-        )
+        client = hvac.Client(url=host, token=VAULT_TOKEN, namespace=VAULT_NAMESPACE)
+        vault_client = VaultAdapter(client=client)
         # necessary for now
         time.sleep(2)
-        yield VaultFixture(client=vault_client)
+        yield VaultFixture(adapter=vault_client)

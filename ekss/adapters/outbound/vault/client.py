@@ -15,7 +15,6 @@
 """Provides client side functionality for interaction with HashiCorp Vault"""
 
 import base64
-from typing import Union
 from uuid import uuid4
 
 import hvac
@@ -24,25 +23,12 @@ import hvac.exceptions
 from ekss.adapters.outbound.vault import exceptions
 
 
-class VaultClient(hvac.Client):
-    """Custom hvac client delegating actions"""
+class VaultAdapter:
+    """Adapter wrapping hvac.Client"""
 
-    def __init__(  # pylint: disable=too-many-arguments
-        self,
-        url: str,
-        token: str,
-        namespace: str = "vault",
-        verify: Union[bool, str] = True,
-        timeout: int = 15,
-    ):
-        super().__init__(
-            url=url,
-            namespace=namespace,
-            token=token,
-            verify=verify,
-            timeout=timeout,
-        )
-        self.secrets.kv.default_kv_version = 2
+    def __init__(self, client: hvac.Client):  # pylint: disable=too-many-arguments
+        self.client = client
+        self.client.secrets.kv.default_kv_version = 2
 
     def store_secret(self, *, secret: bytes, prefix: str = "ekss") -> str:
         """
@@ -54,7 +40,7 @@ class VaultClient(hvac.Client):
 
         try:
             # set cas to 0 as we only want a static secret
-            self.secrets.kv.create_or_update_secret(
+            self.client.secrets.kv.create_or_update_secret(
                 path=f"{prefix}/{key}", secret={key: value}, cas=0
             )
         except hvac.exceptions.InvalidRequest as exc:
@@ -67,7 +53,9 @@ class VaultClient(hvac.Client):
         Key should be a UUID4 returned by store_secret on insertion
         """
         try:
-            response = self.secrets.kv.read_secret_version(path=f"{prefix}/{key}")
+            response = self.client.secrets.kv.read_secret_version(
+                path=f"{prefix}/{key}"
+            )
         except hvac.exceptions.InvalidRequest as exc:
             raise exceptions.SecrertRetrievalError() from exc
 
