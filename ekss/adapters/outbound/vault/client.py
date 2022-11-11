@@ -27,8 +27,8 @@ class VaultAdapter:
     """Adapter wrapping hvac.Client"""
 
     def __init__(self, client: hvac.Client):  # pylint: disable=too-many-arguments
-        self.client = client
-        self.client.secrets.kv.default_kv_version = 2
+        self._client = client
+        self._client.secrets.kv.default_kv_version = 2
 
     def store_secret(self, *, secret: bytes, prefix: str = "ekss") -> str:
         """
