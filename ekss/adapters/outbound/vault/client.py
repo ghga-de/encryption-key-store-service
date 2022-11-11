@@ -40,7 +40,7 @@ class VaultAdapter:
 
         try:
             # set cas to 0 as we only want a static secret
-            self.client.secrets.kv.create_or_update_secret(
+            self._client.secrets.kv.create_or_update_secret(
                 path=f"{prefix}/{key}", secret={key: value}, cas=0
             )
         except hvac.exceptions.InvalidRequest as exc:
