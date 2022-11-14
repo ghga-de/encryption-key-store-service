@@ -22,7 +22,7 @@ from tests.fixtures.vault import VaultFixture
 
 def test_connection(vault_fixture: VaultFixture):  # noqa: F811
     """Test if container is up and reachable"""
-    assert vault_fixture.adapter.client.is_authenticated()
+    assert vault_fixture.adapter.is_authenticated()
     secret = os.urandom(32)
     key = vault_fixture.adapter.store_secret(secret=secret)
     stored_secret = vault_fixture.adapter.get_secret(key=key)

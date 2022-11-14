@@ -61,3 +61,7 @@ class VaultAdapter:
 
         secret = response["data"]["data"][key]
         return base64.b64decode(secret)
+
+    def is_authenticated(self) -> bool:
+        """Delegate to client method"""
+        return self._client.is_authenticated()
