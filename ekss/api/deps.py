@@ -21,8 +21,13 @@ from ekss.adapters.outbound.vault import VaultAdapter
 from ekss.config import CONFIG, VaultConfig
 
 
-def vault_injector(config: VaultConfig = CONFIG) -> VaultAdapter:
-    """Injectable vault adapter with overridable config for tests"""
+def config_injector():
+    """Injectable config, overridable for tests"""
+    return CONFIG
+
+
+def get_vault(config: VaultConfig) -> VaultAdapter:
+    """blargh"""
     url = f"{config.vault_host}:{config.vault_port}"
     client = hvac.Client(url=url, token=config.vault_token.get_secret_value())
     return VaultAdapter(client=client)

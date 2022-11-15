@@ -15,13 +15,12 @@
 """Checking if POST on /secrets works correctly"""
 import base64
 import io
-from functools import partial
 
 import crypt4gh.header
 import pytest
 from fastapi.testclient import TestClient
 
-from ekss.api.deps import vault_injector
+from ekss.api.deps import config_injector
 from ekss.api.main import setup_app
 from ekss.config import CONFIG
 
@@ -41,9 +40,7 @@ async def test_post_secrets(
 ):
     """Test request response for /secrets endpoint with valid data"""
 
-    app.dependency_overrides[vault_injector] = partial(
-        vault_injector, config=first_part_fixture.vault.config
-    )
+    app.dependency_overrides[config_injector] = lambda: first_part_fixture.vault.config
 
     payload = first_part_fixture.content
 
@@ -53,8 +50,8 @@ async def test_post_secrets(
         ),
         "file_part": base64.b64encode(payload).decode("utf-8"),
     }
-    response = client.post(url="/secrets", json=request_body)
 
+    response = client.post(url="/secrets", json=request_body)
     assert response.status_code == 200
     body = response.json()
     secret = base64.b64decode(body["secret"])
@@ -78,9 +75,7 @@ async def test_corrupted_header(
 ):
     """Test request response for /secrets endpoint with first char replaced in envelope"""
 
-    app.dependency_overrides[vault_injector] = partial(
-        vault_injector, config=first_part_fixture.vault.config
-    )
+    app.dependency_overrides[config_injector] = lambda: first_part_fixture.vault.config
 
     payload = b"k" + first_part_fixture.content[2:]
     content = base64.b64encode(payload).decode("utf-8")
@@ -93,6 +88,7 @@ async def test_corrupted_header(
     }
 
     response = client.post(url="/secrets", json=request_body)
+    print(response.json())
     assert response.status_code == 400
     body = response.json()
     assert body["exception_id"] == "malformedOrMissingEnvelopeError"
@@ -105,9 +101,7 @@ async def test_missing_envelope(
 ):
     """Test request response for /secrets endpoint without envelope"""
 
-    app.dependency_overrides[vault_injector] = partial(
-        vault_injector, config=first_part_fixture.vault.config
-    )
+    app.dependency_overrides[config_injector] = lambda: first_part_fixture.vault.config
 
     payload = first_part_fixture.content
     content = base64.b64encode(payload).decode("utf-8")

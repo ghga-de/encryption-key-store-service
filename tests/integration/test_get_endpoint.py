@@ -16,13 +16,12 @@
 
 import base64
 import io
-from functools import partial
 
 import crypt4gh.header
 import pytest
 from fastapi.testclient import TestClient
 
-from ekss.api.deps import vault_injector
+from ekss.api.deps import config_injector
 from ekss.api.main import setup_app
 from ekss.config import CONFIG
 
@@ -42,9 +41,7 @@ async def test_get_envelope(
 ):
     """Test request response for /secrets/../envelopes/.. endpoint with valid data"""
 
-    app.dependency_overrides[vault_injector] = partial(
-        vault_injector, config=envelope_fixture.vault.config
-    )
+    app.dependency_overrides[config_injector] = lambda: envelope_fixture.vault.config
 
     secret_id = envelope_fixture.secret_id
     client_pk = base64.urlsafe_b64encode(envelope_fixture.client_pk).decode("utf-8")
@@ -69,9 +66,7 @@ async def test_wrong_id(
 ):
     """Test request response for /secrets/../envelopes/.. endpoint with invalid secret_id"""
 
-    app.dependency_overrides[vault_injector] = partial(
-        vault_injector, config=envelope_fixture.vault.config
-    )
+    app.dependency_overrides[config_injector] = lambda: envelope_fixture.vault.config
 
     secret_id = "wrong_id"
     client_pk = base64.urlsafe_b64encode(envelope_fixture.client_pk).decode("utf-8")
