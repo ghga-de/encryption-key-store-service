@@ -87,7 +87,6 @@ async def test_corrupted_header(
     }
 
     response = client.post(url="/secrets", json=request_body)
-    print(response.json())
     assert response.status_code == 400
     body = response.json()
     assert body["exception_id"] == "malformedOrMissingEnvelopeError"
