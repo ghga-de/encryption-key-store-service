@@ -12,17 +12,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""FastAPI dependencies (used with the `Depends` feature)"""
-
-import hvac
-
-from ekss.adapters.outbound.vault import VaultAdapter
-from ekss.config import CONFIG, VaultConfig
-
-
-def vault_injector(config: VaultConfig = CONFIG) -> VaultAdapter:
-    """Injectable vault adapter with overridable config for tests"""
-    url = f"{config.vault_host}:{config.vault_port}"
-    client = hvac.Client(url=url, token=config.vault_token.get_secret_value())
-    return VaultAdapter(client=client)
+"""Outbound adapters"""

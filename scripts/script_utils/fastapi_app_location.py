@@ -20,8 +20,6 @@
 # pylint: skip-file
 
 from ekss.api.main import setup_app
-
-# Please adapt to package structure:
 from ekss.config import CONFIG
 
 app = setup_app(CONFIG)
