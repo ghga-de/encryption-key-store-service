@@ -14,7 +14,10 @@
 # limitations under the License.
 """Module containing HashiCorp vault related functionality"""
 
-from .client import VaultAdapter
-from .exceptions import SecretInsertionError, SecretRetrievalError
+from ekss.adapters.outbound.vault.client import VaultAdapter
+from ekss.adapters.outbound.vault.exceptions import (
+    SecretInsertionError,
+    SecretRetrievalError,
+)
 
 __all__ = ["SecretInsertionError", "SecretRetrievalError", "VaultAdapter"]

@@ -23,11 +23,10 @@ from fastapi.testclient import TestClient
 from ekss.api.deps import config_injector
 from ekss.api.main import setup_app
 from ekss.config import CONFIG
-
-from ..fixtures.file import first_part_fixture  # noqa: F401
-from ..fixtures.file import FirstPartFixture
-from ..fixtures.keypair import generate_keypair_fixture  # noqa: F401
-from ..fixtures.vault import vault_fixture  # noqa: F401
+from tests.fixtures.file import first_part_fixture  # noqa: F401
+from tests.fixtures.file import FirstPartFixture
+from tests.fixtures.keypair import generate_keypair_fixture  # noqa: F401
+from tests.fixtures.vault import vault_fixture  # noqa: F401
 
 app = setup_app(CONFIG)
 client = TestClient(app=app)

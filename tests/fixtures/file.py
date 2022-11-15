@@ -24,11 +24,10 @@ import pytest_asyncio
 from ghga_service_chassis_lib.utils import big_temp_file
 
 from ekss.config import CONFIG
-
-from .keypair import generate_keypair_fixture  # noqa: F401
-from .keypair import KeypairFixture
-from .vault import vault_fixture  # noqa: F401
-from .vault import VaultFixture
+from tests.fixtures.keypair import generate_keypair_fixture  # noqa: F401
+from tests.fixtures.keypair import KeypairFixture
+from tests.fixtures.vault import vault_fixture  # noqa: F401
+from tests.fixtures.vault import VaultFixture
 
 
 @dataclass
