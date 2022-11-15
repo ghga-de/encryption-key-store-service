@@ -1,32 +1,5 @@
 components:
   schemas:
-    Body_post_encryption_secrets_secrets_post:
-      properties:
-        config:
-          allOf:
-          - $ref: '#/components/schemas/VaultConfig'
-          default:
-            api_root_path: /
-            auto_reload: false
-            docs_url: /docs
-            host: 127.0.0.1
-            log_level: info
-            openapi_url: /openapi.json
-            port: 8080
-            server_private_key: '**********'
-            server_public_key: HsKvfHsAFNGykFi/zMssay0xajoHvY30IcYPGDCXrGU=
-            service_name: encryption_key_store
-            vault_host: http://127.0.0.1
-            vault_port: 8200
-            vault_token: '**********'
-            workers: 1
-          title: Config
-        envelope_query:
-          $ref: '#/components/schemas/InboundEnvelopeQuery'
-      required:
-      - envelope_query
-      title: HttpEnvelopeDecrpytionErrorData
-      type: object
     HTTPValidationError:
       properties:
         detail:
@@ -187,39 +160,6 @@ components:
       - type
       title: ValidationError
       type: object
-    VaultConfig:
-      additionalProperties: false
-      description: Configuration for HashiCorp Vault connection
-      properties:
-        vault_host:
-          description: URL of the vault instance to connect to without port number
-          env_names:
-          - vault_host
-          example: http://127.0.0.1
-          title: Vault Host
-          type: string
-        vault_port:
-          description: Port number of the vault instance to connect to
-          env_names:
-          - vault_port
-          example: '8200'
-          title: Vault Port
-          type: integer
-        vault_token:
-          description: Token used for authentication against HashiCorp Vault
-          env_names:
-          - vault_token
-          example: dummy-token
-          format: password
-          title: Vault Token
-          type: string
-          writeOnly: true
-      required:
-      - vault_host
-      - vault_port
-      - vault_token
-      title: HttpEnvelopeDecrpytionErrorData
-      type: object
 info:
   title: FastAPI
   version: 0.1.0
@@ -236,7 +176,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Body_post_encryption_secrets_secrets_post'
+              $ref: '#/components/schemas/InboundEnvelopeQuery'
         required: true
       responses:
         '200':
@@ -283,28 +223,6 @@ paths:
         schema:
           title: Client Pk
           type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-              - $ref: '#/components/schemas/VaultConfig'
-              default:
-                api_root_path: /
-                auto_reload: false
-                docs_url: /docs
-                host: 127.0.0.1
-                log_level: info
-                openapi_url: /openapi.json
-                port: 8080
-                server_private_key: '**********'
-                server_public_key: HsKvfHsAFNGykFi/zMssay0xajoHvY30IcYPGDCXrGU=
-                service_name: encryption_key_store
-                vault_host: http://127.0.0.1
-                vault_port: 8200
-                vault_token: '**********'
-                workers: 1
-              title: Config
       responses:
         '200':
           content:

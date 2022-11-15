@@ -27,7 +27,7 @@ def config_injector():
 
 
 def get_vault(config: VaultConfig) -> VaultAdapter:
-    """blargh"""
+    """Get VaultAdapter for config"""
     url = f"{config.vault_host}:{config.vault_port}"
     client = hvac.Client(url=url, token=config.vault_token.get_secret_value())
     return VaultAdapter(client=client)
