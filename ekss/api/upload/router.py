@@ -18,9 +18,9 @@ import base64
 
 from fastapi import APIRouter, Depends, status
 
-from ekss.api.deps import config_injector, get_vault
+from ekss.adapters.outbound.vault import VaultAdapter
+from ekss.api.deps import get_vault
 from ekss.api.upload import exceptions, models
-from ekss.config import VaultConfig
 from ekss.core.envelope_decryption import extract_envelope_content
 
 upload_router = APIRouter()
@@ -52,7 +52,7 @@ ERROR_RESPONSES = {
 async def post_encryption_secrets(
     *,
     envelope_query: models.InboundEnvelopeQuery,
-    vault_config: VaultConfig = Depends(config_injector),
+    vault: VaultAdapter = Depends(get_vault),
 ):
     """Extract file encryption/decryption secret, create secret ID and extract
     file content offset"""
@@ -70,7 +70,6 @@ async def post_encryption_secrets(
             raise exceptions.HttpEnvelopeDecrpytionError() from error
         raise exceptions.HttpMalformedOrMissingEnvelopeError() from error
 
-    vault = get_vault(vault_config)
     secret_id = vault.store_secret(secret=file_secret)
     return {
         "secret": base64.b64encode(file_secret).decode("utf-8"),

@@ -18,10 +18,9 @@ import base64
 
 from fastapi import APIRouter, Depends, status
 
-from ekss.adapters.outbound.vault import SecretRetrievalError
-from ekss.api.deps import config_injector, get_vault
+from ekss.adapters.outbound.vault import SecretRetrievalError, VaultAdapter
+from ekss.api.deps import get_vault
 from ekss.api.download import exceptions, models
-from ekss.config import VaultConfig
 from ekss.core.envelope_encryption import get_envelope
 
 download_router = APIRouter()
@@ -46,13 +45,9 @@ ERROR_RESPONSES = {
     },
 )
 async def get_header_envelope(
-    *,
-    secret_id: str,
-    client_pk: str,
-    vault_config: VaultConfig = Depends(config_injector)
+    *, secret_id: str, client_pk: str, vault: VaultAdapter = Depends(get_vault)
 ):
     """Create header envelope for the file secret with given ID encrypted with a given public key"""
-    vault = get_vault(vault_config)
     try:
         header_envelope = await get_envelope(
             secret_id=secret_id,
