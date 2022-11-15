@@ -17,8 +17,10 @@
 
 from ghga_service_chassis_lib.api import run_server
 
-from .api.main import app  # noqa: F401 pylint: disable=unused-import
+from .api.main import setup_app  # noqa: F401 pylint: disable=unused-import
 from .config import CONFIG, Config
+
+app = setup_app(CONFIG)
 
 
 def run(config: Config = CONFIG):

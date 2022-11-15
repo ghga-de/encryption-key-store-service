@@ -15,9 +15,14 @@
 
 """FastAPI dependencies (used with the `Depends` feature)"""
 
-from ..config import CONFIG
+import hvac
+
+from ekss.adapters.outbound.vault import VaultAdapter
+from ekss.config import CONFIG, VaultConfig
 
 
-def get_config():
-    """Get runtime configuration."""
-    return CONFIG
+def vault_injector(config: VaultConfig = CONFIG) -> VaultAdapter:
+    """Injectable vault adapter with overridable config for tests"""
+    url = f"{config.vault_host}:{config.vault_port}"
+    client = hvac.Client(url=url, token=config.vault_token)
+    return VaultAdapter(client=client)

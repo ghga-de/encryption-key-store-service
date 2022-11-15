@@ -19,5 +19,11 @@
 # flake8: noqa
 # pylint: skip-file
 
+from ekss.api.main import setup_app
+
 # Please adapt to package structure:
-from ekss.api.main import app
+from ekss.config import CONFIG
+
+app = setup_app(CONFIG)
+
+__all__ = ["app"]

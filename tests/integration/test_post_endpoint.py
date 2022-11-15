@@ -15,21 +15,22 @@
 """Checking if POST on /secrets works correctly"""
 import base64
 import io
+from functools import partial
 
 import crypt4gh.header
 import pytest
 from fastapi.testclient import TestClient
 
-from ekss.api.main import app
-from ekss.api.upload.router import dao_injector
+from ekss.api.deps import vault_injector
+from ekss.api.main import setup_app
 from ekss.config import CONFIG
-from ekss.core.dao.mongo_db import FileSecretDao
 
-from ..fixtures.dao_keypair import dao_fixture  # noqa: F401
-from ..fixtures.dao_keypair import generate_keypair_fixture  # noqa: F401
-from ..fixtures.file_fixture import first_part_fixture  # noqa: F401
-from ..fixtures.file_fixture import FirstPartFixture
+from ..fixtures.file import first_part_fixture  # noqa: F401
+from ..fixtures.file import FirstPartFixture
+from ..fixtures.keypair import generate_keypair_fixture  # noqa: F401
+from ..fixtures.vault import vault_fixture  # noqa: F401
 
+app = setup_app(CONFIG)
 client = TestClient(app=app)
 
 
@@ -40,11 +41,9 @@ async def test_post_secrets(
 ):
     """Test request response for /secrets endpoint with valid data"""
 
-    async def dao_override() -> FileSecretDao:
-        """Ad hoc DAO dependency overridde"""
-        return first_part_fixture.dao
-
-    app.dependency_overrides[dao_injector] = dao_override
+    app.dependency_overrides[vault_injector] = partial(
+        vault_injector, config=first_part_fixture.vault.config
+    )
 
     payload = first_part_fixture.content
 
@@ -55,6 +54,7 @@ async def test_post_secrets(
         "file_part": base64.b64encode(payload).decode("utf-8"),
     }
     response = client.post(url="/secrets", json=request_body)
+
     assert response.status_code == 200
     body = response.json()
     secret = base64.b64decode(body["secret"])
@@ -78,11 +78,9 @@ async def test_corrupted_header(
 ):
     """Test request response for /secrets endpoint with first char replaced in envelope"""
 
-    async def dao_override() -> FileSecretDao:
-        """Ad hoc DAO dependency overridde"""
-        return first_part_fixture.dao
-
-    app.dependency_overrides[dao_injector] = dao_override
+    app.dependency_overrides[vault_injector] = partial(
+        vault_injector, config=first_part_fixture.vault.config
+    )
 
     payload = b"k" + first_part_fixture.content[2:]
     content = base64.b64encode(payload).decode("utf-8")
@@ -107,11 +105,9 @@ async def test_missing_envelope(
 ):
     """Test request response for /secrets endpoint without envelope"""
 
-    async def dao_override() -> FileSecretDao:
-        """Ad hoc DAO dependency overridde"""
-        return first_part_fixture.dao
-
-    app.dependency_overrides[dao_injector] = dao_override
+    app.dependency_overrides[vault_injector] = partial(
+        vault_injector, config=first_part_fixture.vault.config
+    )
 
     payload = first_part_fixture.content
     content = base64.b64encode(payload).decode("utf-8")
