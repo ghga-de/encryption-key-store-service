@@ -13,22 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Entrypoint of the package"""
-
-from ghga_service_chassis_lib.api import run_server
-
-from ekss.adapters.inbound.fastapi_.main import (  # noqa: F401 pylint: disable=unused-import
-    setup_app,
-)
-from ekss.config import CONFIG, Config
-
-app = setup_app(CONFIG)
-
-
-def run(config: Config = CONFIG):
-    """Run the service"""
-    run_server(app="ekss.__main__:app", config=config)
-
-
-if __name__ == "__main__":
-    run()
+"""Subpackage defining a inbound/primary/driving adapters according to the
+Hexagonal Architecture Concept."""

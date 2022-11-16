@@ -22,8 +22,8 @@ Additional endpoints might be structured in dedicated modules
 from fastapi import FastAPI
 from ghga_service_chassis_lib.api import ApiConfigBase, configure_app
 
-from ekss.api.download.router import download_router
-from ekss.api.upload.router import upload_router
+from ekss.adapters.inbound.fastapi_.download.router import download_router
+from ekss.adapters.inbound.fastapi_.upload.router import upload_router
 
 
 def setup_app(config: ApiConfigBase):

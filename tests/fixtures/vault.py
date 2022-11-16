@@ -22,8 +22,8 @@ import hvac
 import pytest
 from testcontainers.general import DockerContainer
 
+from ekss.adapters.inbound.fastapi_.deps import VaultConfig
 from ekss.adapters.outbound.vault.client import VaultAdapter
-from ekss.api.deps import VaultConfig
 
 VAULT_ADDR = "http://0.0.0.0:8200"
 VAULT_NAMESPACE = "vault"

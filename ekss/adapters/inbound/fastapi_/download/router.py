@@ -18,9 +18,9 @@ import base64
 
 from fastapi import APIRouter, Depends, status
 
+from ekss.adapters.inbound.fastapi_.deps import get_vault
+from ekss.adapters.inbound.fastapi_.download import exceptions, models
 from ekss.adapters.outbound.vault import SecretRetrievalError, VaultAdapter
-from ekss.api.deps import get_vault
-from ekss.api.download import exceptions, models
 from ekss.core.envelope_encryption import get_envelope
 
 download_router = APIRouter()

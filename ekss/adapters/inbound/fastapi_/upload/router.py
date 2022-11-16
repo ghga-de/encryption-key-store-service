@@ -18,9 +18,9 @@ import base64
 
 from fastapi import APIRouter, Depends, status
 
+from ekss.adapters.inbound.fastapi_.deps import get_vault
+from ekss.adapters.inbound.fastapi_.upload import exceptions, models
 from ekss.adapters.outbound.vault import VaultAdapter
-from ekss.api.deps import get_vault
-from ekss.api.upload import exceptions, models
 from ekss.core.envelope_decryption import extract_envelope_content
 
 upload_router = APIRouter()
