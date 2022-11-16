@@ -4,100 +4,104 @@ components:
       properties:
         detail:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: "#/components/schemas/ValidationError"
           title: Detail
           type: array
       title: HTTPValidationError
       type: object
-    HttpEnvelopeDecrpytionError:
+    HttpEnvelopeDecryptionError:
       additionalProperties: false
       description: A custom exception body model.
       properties:
         data:
-          $ref: '#/components/schemas/HttpEnvelopeDecrpytionErrorData'
+          $ref: "#/components/schemas/HttpEnvelopeDecryptionErrorData"
         description:
-          description: A human readable message to the client explaining the cause
+          description:
+            A human readable message to the client explaining the cause
             of the exception.
           title: Description
           type: string
         exception_id:
           enum:
-          - envelopeDecryptionError
+            - envelopeDecryptionError
           title: Exception Id
           type: string
       required:
-      - data
-      - description
-      - exception_id
-      title: HttpEnvelopeDecrpytionErrorData
+        - data
+        - description
+        - exception_id
+      title: HttpEnvelopeDecryptionErrorData
       type: object
-    HttpEnvelopeDecrpytionErrorData:
+    HttpEnvelopeDecryptionErrorData:
       description: Model for exception data
       properties: {}
-      title: HttpEnvelopeDecrpytionErrorData
+      title: HttpEnvelopeDecryptionErrorData
       type: object
     HttpMalformedOrMissingEnvelopeError:
       additionalProperties: false
       description: A custom exception body model.
       properties:
         data:
-          $ref: '#/components/schemas/HttpMalformedOrMissingEnvelopeErrorData'
+          $ref: "#/components/schemas/HttpMalformedOrMissingEnvelopeErrorData"
         description:
-          description: A human readable message to the client explaining the cause
+          description:
+            A human readable message to the client explaining the cause
             of the exception.
           title: Description
           type: string
         exception_id:
           enum:
-          - malformedOrMissingEnvelopeError
+            - malformedOrMissingEnvelopeError
           title: Exception Id
           type: string
       required:
-      - data
-      - description
-      - exception_id
-      title: HttpEnvelopeDecrpytionErrorData
+        - data
+        - description
+        - exception_id
+      title: HttpEnvelopeDecryptionErrorData
       type: object
     HttpMalformedOrMissingEnvelopeErrorData:
       description: Model for exception data
       properties: {}
-      title: HttpEnvelopeDecrpytionErrorData
+      title: HttpEnvelopeDecryptionErrorData
       type: object
     HttpSecretNotFoundError:
       additionalProperties: false
       description: A custom exception body model.
       properties:
         data:
-          $ref: '#/components/schemas/HttpSecretNotFoundErrorData'
+          $ref: "#/components/schemas/HttpSecretNotFoundErrorData"
         description:
-          description: A human readable message to the client explaining the cause
+          description:
+            A human readable message to the client explaining the cause
             of the exception.
           title: Description
           type: string
         exception_id:
           enum:
-          - secretNotFoundError
+            - secretNotFoundError
           title: Exception Id
           type: string
       required:
-      - data
-      - description
-      - exception_id
-      title: HttpEnvelopeDecrpytionErrorData
+        - data
+        - description
+        - exception_id
+      title: HttpEnvelopeDecryptionErrorData
       type: object
     HttpSecretNotFoundErrorData:
       description: Model for exception data
       properties: {}
-      title: HttpEnvelopeDecrpytionErrorData
+      title: HttpEnvelopeDecryptionErrorData
       type: object
     InboundEnvelopeContent:
-      description: 'Contains file encryption/decryption secret extracted from file
+      description:
+        "Contains file encryption/decryption secret extracted from file
         envelope, the ID
 
         generated for this secret and the file content offset, i.e. the location of
         the
 
-        encrypted file content within the file.'
+        encrypted file content within the file."
       properties:
         offset:
           title: Offset
@@ -109,10 +113,10 @@ components:
           title: Secret Id
           type: string
       required:
-      - secret
-      - secret_id
-      - offset
-      title: HttpEnvelopeDecrpytionErrorData
+        - secret
+        - secret_id
+        - offset
+      title: HttpEnvelopeDecryptionErrorData
       type: object
     InboundEnvelopeQuery:
       description: Request object containing first file part and a public key.
@@ -124,22 +128,23 @@ components:
           title: Public Key
           type: string
       required:
-      - file_part
-      - public_key
-      title: HttpEnvelopeDecrpytionErrorData
+        - file_part
+        - public_key
+      title: HttpEnvelopeDecryptionErrorData
       type: object
     OutboundEnvelopeContent:
-      description: 'Contains the header envelope, which contains the file secret encrypted
+      description:
+        "Contains the header envelope, which contains the file secret encrypted
         with the
 
-        client''s public key and the server''s private key'
+        client's public key and the server's private key"
       properties:
         content:
           title: Content
           type: string
       required:
-      - content
-      title: HttpEnvelopeDecrpytionErrorData
+        - content
+      title: HttpEnvelopeDecryptionErrorData
       type: object
     ValidationError:
       properties:
@@ -155,13 +160,14 @@ components:
           title: Error Type
           type: string
       required:
-      - loc
-      - msg
-      - type
+        - loc
+        - msg
+        - type
       title: ValidationError
       type: object
 info:
-  description: A service managing storage and retrieval of symmetric keys in a HashiCorp
+  description:
+    A service managing storage and retrieval of symmetric keys in a HashiCorp
     Vault.
   title: Encryption Key Store Service
   version: 0.2.0
@@ -169,88 +175,92 @@ openapi: 3.0.2
 paths:
   /secrets:
     post:
-      description: 'Extract file encryption/decryption secret, create secret ID and
+      description:
+        "Extract file encryption/decryption secret, create secret ID and
         extract
 
-        file content offset'
+        file content offset"
       operationId: postEncryptionData
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InboundEnvelopeQuery'
+              $ref: "#/components/schemas/InboundEnvelopeQuery"
         required: true
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InboundEnvelopeContent'
-          description: ''
-        '400':
+                $ref: "#/components/schemas/InboundEnvelopeContent"
+          description: ""
+        "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpMalformedOrMissingEnvelopeError'
+                $ref: "#/components/schemas/HttpMalformedOrMissingEnvelopeError"
           description: Bad Request
-        '403':
+        "403":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpEnvelopeDecrpytionError'
+                $ref: "#/components/schemas/HttpEnvelopeDecryptionError"
           description: Forbidden
-        '422':
+        "422":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
           description: Validation Error
-      summary: Extract file encryption/decryption secret and file content offset from
+      summary:
+        Extract file encryption/decryption secret and file content offset from
         enevelope
       tags:
-      - EncryptionKeyStoreService
+        - EncryptionKeyStoreService
   /secrets/{secret_id}/envelopes/{client_pk}:
     get:
-      description: Create header envelope for the file secret with given ID encrypted
+      description:
+        Create header envelope for the file secret with given ID encrypted
         with a given public key
       operationId: getEncryptionData
       parameters:
-      - in: path
-        name: secret_id
-        required: true
-        schema:
-          title: Secret Id
-          type: string
-      - in: path
-        name: client_pk
-        required: true
-        schema:
-          title: Client Pk
-          type: string
+        - in: path
+          name: secret_id
+          required: true
+          schema:
+            title: Secret Id
+            type: string
+        - in: path
+          name: client_pk
+          required: true
+          schema:
+            title: Client Pk
+            type: string
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OutboundEnvelopeContent'
-          description: ''
-        '404':
+                $ref: "#/components/schemas/OutboundEnvelopeContent"
+          description: ""
+        "404":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HttpSecretNotFoundError'
+                $ref: "#/components/schemas/HttpSecretNotFoundError"
           description: Not Found
-        '422':
+        "422":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
           description: Validation Error
-      summary: Get personalized envelope containing Crypt4GH file encryption/decryption
+      summary:
+        Get personalized envelope containing Crypt4GH file encryption/decryption
         key
       tags:
-      - EncryptionKeyStoreService
+        - EncryptionKeyStoreService
 servers:
-- url: /
+  - url: /
 tags:
-- name: EncryptionKeyStoreService
+  - name: EncryptionKeyStoreService

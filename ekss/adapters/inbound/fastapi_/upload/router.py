@@ -31,7 +31,7 @@ ERROR_RESPONSES = {
     },
     "envelopeDecryptionError": {
         "description": (""),
-        "model": exceptions.HttpEnvelopeDecrpytionError.get_body_model(),
+        "model": exceptions.HttpEnvelopeDecryptionError.get_body_model(),
     },
 }
 
@@ -66,7 +66,7 @@ async def post_encryption_secrets(
     except ValueError as error:
         # Everything in envelope decryption is a ValueError... try to distinguish based on message
         if "No supported encryption method" == str(error):
-            raise exceptions.HttpEnvelopeDecrpytionError() from error
+            raise exceptions.HttpEnvelopeDecryptionError() from error
         raise exceptions.HttpMalformedOrMissingEnvelopeError() from error
 
     secret_id = vault.store_secret(secret=file_secret)
