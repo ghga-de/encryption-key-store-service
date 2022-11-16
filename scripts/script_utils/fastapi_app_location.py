@@ -19,7 +19,7 @@
 # flake8: noqa
 # pylint: skip-file
 
-from ekss.api.main import setup_app
+from ekss.adapters.inbound.fastapi_.main import setup_app
 from ekss.config import CONFIG
 
 app = setup_app(CONFIG)
