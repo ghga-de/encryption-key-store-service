@@ -161,8 +161,10 @@ components:
       title: ValidationError
       type: object
 info:
-  title: FastAPI
-  version: 0.1.0
+  description: A service managing storage and retrieval of symmetric keys in a HashiCorp
+    Vault.
+  title: Encryption Key Store Service
+  version: 0.2.0
 openapi: 3.0.2
 paths:
   /secrets:
@@ -205,6 +207,8 @@ paths:
           description: Validation Error
       summary: Extract file encryption/decryption secret and file content offset from
         enevelope
+      tags:
+      - EncryptionKeyStoreService
   /secrets/{secret_id}/envelopes/{client_pk}:
     get:
       description: Create header envelope for the file secret with given ID encrypted
@@ -244,3 +248,9 @@ paths:
           description: Validation Error
       summary: Get personalized envelope containing Crypt4GH file encryption/decryption
         key
+      tags:
+      - EncryptionKeyStoreService
+servers:
+- url: /
+tags:
+- name: EncryptionKeyStoreService
