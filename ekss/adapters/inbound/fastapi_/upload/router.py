@@ -23,8 +23,7 @@ from ekss.adapters.inbound.fastapi_.upload import exceptions, models
 from ekss.adapters.outbound.vault import VaultAdapter
 from ekss.core.envelope_decryption import extract_envelope_content
 
-upload_router = APIRouter()
-
+upload_router = APIRouter(tags=["EncryptionKeyStoreService"])
 ERROR_RESPONSES = {
     "malformedOrMissingEnvelope": {
         "description": (""),
