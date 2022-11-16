@@ -12,16 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-"""Used to define the location of the main FastAPI app object."""
-
-# flake8: noqa
-# pylint: skip-file
-
-from ekss.adapters.inbound.fastapi_.main import setup_app
-from ekss.config import CONFIG
-
-app = setup_app(CONFIG)
-
-__all__ = ["app"]
+"""Subpackage defining a inbound/primary/driving adapters according to the
+Hexagonal Architecture Concept."""

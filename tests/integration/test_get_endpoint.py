@@ -21,8 +21,8 @@ import crypt4gh.header
 import pytest
 from fastapi.testclient import TestClient
 
-from ekss.api.deps import config_injector
-from ekss.api.main import setup_app
+from ekss.adapters.inbound.fastapi_.deps import config_injector
+from ekss.adapters.inbound.fastapi_.main import setup_app
 from ekss.config import CONFIG
 from tests.fixtures.envelope import envelope_fixture  # noqa: F401
 from tests.fixtures.envelope import EnvelopeFixture
