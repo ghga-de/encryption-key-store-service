@@ -99,17 +99,21 @@ components:
 
         encrypted file content within the file.'
       properties:
+        new_secret:
+          title: New Secret
+          type: string
         offset:
           title: Offset
           type: integer
-        secret:
-          title: Secret
-          type: string
         secret_id:
           title: Secret Id
           type: string
+        submitter_secret:
+          title: Submitter Secret
+          type: string
       required:
-      - secret
+      - submitter_secret
+      - new_secret
       - secret_id
       - offset
       title: InboundEnvelopeContent
