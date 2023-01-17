@@ -63,6 +63,7 @@ async def test_post_secrets(
     )
 
     assert submitter_secret == session_keys[0]
+    assert body["new_secret"]
     assert body["secret_id"]
     assert body["offset"] > 0
 
