@@ -36,6 +36,14 @@ ERROR_RESPONSES = {
         "description": (""),
         "model": exceptions.HttpEnvelopeDecryptionError.get_body_model(),
     },
+    "secretInsertionError": {
+        "description": (""),
+        "model": exceptions.HttpSecretInsertionError.get_body_model(),
+    },
+    "vaultConnectionError": {
+        "description": (""),
+        "model": exceptions.HttpVaultConnectionError.get_body_model(),
+    },
 }
 
 
@@ -49,6 +57,8 @@ ERROR_RESPONSES = {
     responses={
         status.HTTP_400_BAD_REQUEST: ERROR_RESPONSES["malformedOrMissingEnvelope"],
         status.HTTP_403_FORBIDDEN: ERROR_RESPONSES["envelopeDecryptionError"],
+        status.HTTP_502_BAD_GATEWAY: ERROR_RESPONSES["secretInsertionError"],
+        status.HTTP_504_GATEWAY_TIMEOUT: ERROR_RESPONSES["vaultConnectionError"],
     },
 )
 async def post_encryption_secrets(

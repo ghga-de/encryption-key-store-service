@@ -60,7 +60,7 @@ class HttpSecretInsertionError(HttpCustomExceptionBase):
     class DataModel(BaseModel):
         """Model for exception data"""
 
-    def __init__(self, *, status_code: int = 403):
+    def __init__(self, *, status_code: int = 502):
         """Construct message and init the exception."""
         super().__init__(
             status_code=status_code,
@@ -77,8 +77,7 @@ class HttpVaultConnectionError(HttpCustomExceptionBase):
     class DataModel(BaseModel):
         """Model for exception data"""
 
-    # maybe rather 503?
-    def __init__(self, *, status_code: int = 500):
+    def __init__(self, *, status_code: int = 504):
         """Construct message and init the exception."""
         super().__init__(
             status_code=status_code,
