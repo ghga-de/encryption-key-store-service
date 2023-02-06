@@ -58,7 +58,7 @@ def vault_fixture() -> Generator[VaultFixture, None, None]:
             vault_role_id=role_id,
             vault_secret_id=secret_id,
         )
-        vault_adapter = VaultAdapter(config=config, http_only=True, verify=False)
+        vault_adapter = VaultAdapter(config=config, use_http=True)
         # client needs some time after creation
         time.sleep(2)
         yield VaultFixture(adapter=vault_adapter, config=config)
@@ -66,7 +66,7 @@ def vault_fixture() -> Generator[VaultFixture, None, None]:
 
 def configure_vault(*, host: str, port: int):
     """Configure vault using direct interaction with hvac.Client"""
-    client = hvac.Client(url=f"http://{host}:{port}", token=VAULT_TOKEN, verify=False)
+    client = hvac.Client(url=f"http://{host}:{port}", token=VAULT_TOKEN)
     # client needs some time after creation
     time.sleep(2)
 

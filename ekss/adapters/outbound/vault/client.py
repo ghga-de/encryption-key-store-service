@@ -27,13 +27,11 @@ from ekss.config import VaultConfig
 class VaultAdapter:
     """Adapter wrapping hvac.Client"""
 
-    def __init__(
-        self, config: VaultConfig, http_only: bool = False, verify: bool = True
-    ):
+    def __init__(self, config: VaultConfig, use_http: bool = False):
         """Initialized approle based client and login"""
-        protocol = "http" if http_only else "https"
+        protocol = "http" if use_http else "https"
         url = f"{protocol}://{config.vault_host}:{config.vault_port}"
-        self._client = hvac.Client(url=url, verify=verify)
+        self._client = hvac.Client(url=url)
 
         self._client.secrets.kv.default_kv_version = 2
         self._role_id = config.vault_role_id.get_secret_value()

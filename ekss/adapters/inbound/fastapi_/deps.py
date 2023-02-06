@@ -26,14 +26,14 @@ def config_injector():
     return CONFIG
 
 
-def verify_injector():
-    """Override TLS verification settings for test"""
-    return True
+def use_http_injector():
+    """Configure protocol. https (default, false) or http (for tests, true)"""
+    return False
 
 
 def get_vault(
     config: VaultConfig = Depends(config_injector),
-    verify: bool = Depends(verify_injector),
+    use_http: bool = Depends(use_http_injector),
 ) -> VaultAdapter:
     """Get VaultAdapter for config"""
-    return VaultAdapter(config=config, verify=verify)
+    return VaultAdapter(config=config, use_http=use_http)
