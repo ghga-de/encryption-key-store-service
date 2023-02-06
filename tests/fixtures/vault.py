@@ -58,7 +58,7 @@ def vault_fixture() -> Generator[VaultFixture, None, None]:
             vault_role_id=role_id,
             vault_secret_id=secret_id,
         )
-        vault_adapter = VaultAdapter(config=config, http_only=True)
+        vault_adapter = VaultAdapter(config=config, http_only=True, verify=False)
         # client needs some time after creation
         time.sleep(2)
         yield VaultFixture(adapter=vault_adapter, config=config)
