@@ -24,7 +24,7 @@
     "vault_role_id": {
       "title": "Vault Role Id",
       "description": "Vault role ID to access a specific prefix",
-      "exampled": "example_role",
+      "example": "example_role",
       "env_names": [
         "ekss_vault_role_id"
       ],
@@ -35,7 +35,7 @@
     "vault_secret_id": {
       "title": "Vault Secret Id",
       "description": "Vault secret ID to access a specific prefix",
-      "exampled": "example_secret",
+      "example": "example_secret",
       "env_names": [
         "ekss_vault_secret_id"
       ],

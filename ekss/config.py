@@ -35,12 +35,12 @@ class VaultConfig(BaseSettings):
     )
     vault_role_id: SecretStr = Field(
         ...,
-        exampled="example_role",
+        example="example_role",
         description="Vault role ID to access a specific prefix",
     )
     vault_secret_id: SecretStr = Field(
         ...,
-        exampled="example_secret",
+        example="example_secret",
         description="Vault secret ID to access a specific prefix",
     )
 
