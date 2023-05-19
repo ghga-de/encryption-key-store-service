@@ -16,7 +16,7 @@
 """Config Parameter Modeling and Parsing"""
 
 from ghga_service_commons.api import ApiConfigBase
-from ghga_service_commons.config import config_from_yaml
+from hexkit.config import config_from_yaml
 from pydantic import BaseSettings, Field, SecretStr
 
 
