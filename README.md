@@ -10,29 +10,35 @@ Encryption Key Store Sevice - providing crypt4gh file secret extraction, storage
 
 <!-- Please provide a short overview of the features of this service.-->
 
-This repo is a template for creating a new microservice.
+This service implements an interface to extract file encryption secrects from a
+[GA4GH Crypt4GH](https://www.ga4gh.org/news/crypt4gh-a-secure-method-for-sharing-human-genetic-data/)
+encrypted file in a HashiCorp Vault and request user-specific file envelopes
+containing these secrets.
+The Vault is owned and controlled by this service, no other service has access to it.
 
-The directories, files, and their structure herein are recommendations
-from the GHGA Dev Team.
 
-### Naming Conventions
-The github repository contains only lowercase letters, numbers, and hyphens "-",
-e.g.: `my-microservice`
+### API endpoints:
 
-The python package (and thus the source repository) contains underscores "_"
-instead of hyphens, e.g.: `my_microservice`
-However, an abbreviated version is prefered as package name.
+#### `POST /secrets`:
 
-### Adapt to your service
-This is just a template and needs some adaption to your specific use case.
+This endpoint takes in the first part of a crypt4gh encrypted file that contains the
+file envelope and a client public key.
+It decrypts the envelope, using the clients public and GHGAs private key to get
+the encryption secret.
+It also creates a new random secret that can be used for re-encryption and stores this
+new secret in the vault.
 
-Please search for **"please adapt"** comments. They will indicate all locations
-that need modification. Once the adaptions are in place, please remove these #
-comments.
+This endpoint returns the new secret, the submitted secret, the envelope offset
+(length of the envelope) and the secret id for retrieving the new secret from the vault.
 
-Finally, follow the instructions to generate the README.md described in
-[`./readme_generation.md`](./readme_generation.md). Please also adapt this markdown file
-by providing an overview of the feature of the package.
+
+#### `GET /secrets/{secret_id}/envelopes/{client_pk}`:
+
+This endpoint takes in a secret_id and a client public key.
+It retrieves the corresponding secret from the vault and encrypts it with GHGAs
+private key and the clients public key to create a crypt4gh file envelope.
+
+This enpoint returns the envelope.
 
 
 ## Installation
