@@ -21,7 +21,7 @@ from typing import AsyncGenerator
 
 import crypt4gh.lib
 import pytest_asyncio
-from ghga_service_chassis_lib.utils import big_temp_file
+from ghga_service_commons.utils import big_temp_file
 
 from ekss.config import CONFIG
 from tests.fixtures.keypair import generate_keypair_fixture  # noqa: F401
