@@ -12,7 +12,7 @@ Encryption Key Store Sevice - providing crypt4gh file secret extraction, storage
 
 This service implements an interface to extract file encryption secrects from a
 [GA4GH Crypt4GH](https://www.ga4gh.org/news/crypt4gh-a-secure-method-for-sharing-human-genetic-data/)
-encrypted file in a HashiCorp Vault and request user-specific file envelopes
+encrypted file into a HashiCorp Vault and produce user-specific file envelopes
 containing these secrets.
 
 
@@ -22,18 +22,19 @@ containing these secrets.
 
 This endpoint takes in the first part of a crypt4gh encrypted file that contains the
 file envelope and a client public key.
-It decrypts the envelope, using the clients public and GHGAs private key to get
-the encryption secret.
-It also creates a new random secret that can be used for re-encryption and stores this
-new secret in the vault.
+It decrypts the envelope, using the clients public and GHGA's private key to obtain
+the original encryption secret.
+Subsequently, a new random secret that can be used for re-encryption and is created
+and stored in the vault.
+The original secret is *not* saved in the vault.
 
-This endpoint returns the new secret, the submitted secret, the envelope offset
-(length of the envelope) and the secret id for retrieving the new secret from the vault.
+This endpoint returns the extracted secret, the newly generated secret, the envelope offset
+(length of the envelope) and the secret id which can be used to retrieve the new secret from the vault.
 
 
 #### `GET /secrets/{secret_id}/envelopes/{client_pk}`:
 
-This endpoint takes in a secret_id and a client public key.
+This endpoint takes a secret_id and a client public key.
 It retrieves the corresponding secret from the vault and encrypts it with GHGAs
 private key and the clients public key to create a crypt4gh file envelope.
 
