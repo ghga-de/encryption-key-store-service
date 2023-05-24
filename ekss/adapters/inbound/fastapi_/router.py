@@ -110,7 +110,7 @@ async def post_encryption_secrets(
     "/secrets/{secret_id}/envelopes/{client_pk}",
     summary="Get personalized envelope containing Crypt4GH file encryption/decryption key",
     operation_id="getEncryptionData",
-    status_code=status.HTTP_204_NO_CONTENT,
+    status_code=status.HTTP_200_OK,
     response_model=models.OutboundEnvelopeContent,
     response_description="",
     responses={
@@ -139,7 +139,7 @@ async def get_header_envelope(
     "/secrets/{secret_id}",
     summary="Delete the associated secret",
     operation_id="deleteSecret",
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_204_NO_CONTENT,
     response_model=models.SecretDeletionRequest,
     response_description="",
     responses={
