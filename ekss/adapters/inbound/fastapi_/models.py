@@ -47,3 +47,11 @@ class OutboundEnvelopeContent(BaseModel):
     """
 
     content: str
+
+
+class SecretDeletionRequest(BaseModel):
+    """
+    Contains the secret id of a secret to be deleted
+    """
+
+    secret_id: str
