@@ -49,7 +49,6 @@ This enpoint returns a 204 Response, if the deletion was successfull
 or a 404 response, if the secret_id did not exist.
 
 
-
 ## Installation
 We recommend using the provided Docker container.
 
