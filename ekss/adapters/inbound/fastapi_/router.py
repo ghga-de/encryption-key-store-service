@@ -140,7 +140,6 @@ async def get_header_envelope(
     summary="Delete the associated secret",
     operation_id="deleteSecret",
     status_code=status.HTTP_204_NO_CONTENT,
-    response_model=models.SecretDeletionRequest,
     response_description="",
     responses={
         status.HTTP_404_NOT_FOUND: ERROR_RESPONSES["secretNotFoundError"],
