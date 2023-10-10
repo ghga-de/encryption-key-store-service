@@ -13,24 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Entrypoint of the package"""
+"""Utils to customize openAPI script"""
+from typing import Any
 
-import asyncio
+from fastapi.openapi.utils import get_openapi
 
-from ghga_service_commons.api import run_server
+from ekss import __version__
+from ekss.config import Config
 
-from ekss.adapters.inbound.fastapi_.main import (  # noqa: F401 pylint: disable=unused-import
-    setup_app,
-)
-from ekss.config import CONFIG, Config
-
-app = setup_app(CONFIG)
+config = Config()
 
 
-def run(config: Config = CONFIG):
-    """Run the service"""
-    asyncio.run(run_server(app="ekss.__main__:app", config=config))
-
-
-if __name__ == "__main__":
-    run()
+def get_openapi_schema(api) -> dict[str, Any]:
+    """Generates a custom openapi schema for the service"""
+    return get_openapi(
+        title="Encryption Key Store Service",
+        version=__version__,
+        description="A service managing storage and retrieval of symmetric keys in"
+        + " a HashiCorp Vault.",
+        servers=[{"url": config.api_root_path}],
+        tags=[{"name": "EncryptionKeyStoreService"}],
+        routes=api.routes,
+    )

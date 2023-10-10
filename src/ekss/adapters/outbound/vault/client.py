@@ -71,12 +71,11 @@ class VaultAdapter:
         Retrieve a secret at the subpath of the given prefix denoted by key.
         Key should be a UUID4 returned by store_secret on insertion
         """
-
         self._check_auth()
 
         try:
             response = self._client.secrets.kv.v2.read_secret_version(
-                path=f"{prefix}/{key}"
+                path=f"{prefix}/{key}",
             )
         except hvac.exceptions.InvalidPath as exc:
             raise exceptions.SecretRetrievalError() from exc
@@ -85,9 +84,7 @@ class VaultAdapter:
         return base64.b64decode(secret)
 
     def delete_secret(self, *, key: str, prefix: str = "ekss") -> None:
-        """
-        Delete a secret
-        """
+        """Delete a secret"""
         self._check_auth()
         path = f"{prefix}/{key}"
 

@@ -12,20 +12,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Exceptions wrapping HashiCorp Vault errors """
+
+"""Entrypoint of the package"""
+
+import asyncio
+
+from ghga_service_commons.api import run_server
+
+from ekss.adapters.inbound.fastapi_.main import (
+    setup_app,
+)
+from ekss.config import CONFIG, Config
+
+app = setup_app(CONFIG)
 
 
-class VaultException(RuntimeError):
-    """Baseclass for for errors encountered when interacting with HashiCorp Vault"""
+def run(config: Config = CONFIG):
+    """Run the service"""
+    asyncio.run(run_server(app="ekss.__main__:app", config=config))
 
 
-class SecretInsertionError(VaultException):
-    """Wrapper for errors encountered on secret insertion"""
-
-
-class SecretRetrievalError(VaultException):
-    """Wrapper for errors encountered on secret retrieval"""
-
-
-class SecretDeletionError(VaultException):
-    """Wrapper for errors encountered on secret deletion"""
+if __name__ == "__main__":
+    run()
