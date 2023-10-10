@@ -76,6 +76,7 @@ class VaultAdapter:
         try:
             response = self._client.secrets.kv.v2.read_secret_version(
                 path=f"{prefix}/{key}",
+                raise_on_deleted_version=True,
             )
         except hvac.exceptions.InvalidPath as exc:
             raise exceptions.SecretRetrievalError() from exc
@@ -89,7 +90,9 @@ class VaultAdapter:
         path = f"{prefix}/{key}"
 
         try:
-            self._client.secrets.kv.v2.read_secret_version(path=path)
+            self._client.secrets.kv.v2.read_secret_version(
+                path=path, raise_on_deleted_version=True
+            )
         except hvac.exceptions.InvalidPath as exc:
             raise exceptions.SecretRetrievalError() from exc
 
