@@ -56,7 +56,7 @@ def vault_fixture() -> Generator[VaultFixture, None, None]:
             vault_url=f"http://{host}:{port}",
             vault_role_id=role_id,
             vault_secret_id=secret_id,
-            ca_bundle_location=None,
+            vault_verify=False,
         )
         vault_adapter = VaultAdapter(config=config)
         # client needs some time after creation
