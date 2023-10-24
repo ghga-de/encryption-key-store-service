@@ -41,11 +41,12 @@ class VaultConfig(BaseSettings):
         example="example_secret",
         description="Vault secret ID to access a specific prefix",
     )
-    ca_bundle_location: Optional[Path] = Field(
-        None,
-        example="/my_bundle.pem",
-        description="Path pointing to the location of the CA bundle to use when"
-        + " communicating with the vault.",
+    vault_verify: Union[bool, str] = Field(
+        True,
+        example="/etc/ssl/certs/my_bundle.pem",
+        description="SSL certificates (CA bundle) used to"
+          " verify the identity of the vault, or True to"
+          " use the default CAs, or False for no verification.",
     )
 
 
