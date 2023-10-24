@@ -70,13 +70,13 @@ We recommend using the provided Docker container.
 
 A pre-build version is available at [docker hub](https://hub.docker.com/repository/docker/ghga/encryption-key-store-service):
 ```bash
-docker pull ghga/encryption-key-store-service:0.3.7
+docker pull ghga/encryption-key-store-service:0.3.8
 ```
 
 Or you can build the container yourself from the [`./Dockerfile`](./Dockerfile):
 ```bash
 # Execute in the repo's root dir:
-docker build -t ghga/encryption-key-store-service:0.3.7 .
+docker build -t ghga/encryption-key-store-service:0.3.8 .
 ```
 
 For production-ready deployment, we recommend using Kubernetes, however,
@@ -84,7 +84,7 @@ for simple use cases, you could execute the service using docker
 on a single server:
 ```bash
 # The entrypoint is preconfigured:
-docker run -p 8080:8080 ghga/encryption-key-store-service:0.3.7 --help
+docker run -p 8080:8080 ghga/encryption-key-store-service:0.3.8 --help
 ```
 
 If you prefer not to use containers, you may install the service from source:
@@ -100,15 +100,13 @@ ekss --help
 ### Parameters
 
 The service requires the following configuration parameters:
-- **`debug_vault`** *(boolean)*: If true, runs vault connections over http instead of https. Default: `false`.
-
-- **`vault_host`** *(string)*: URL of the vault instance to connect to without port number.
-
-- **`vault_port`** *(integer)*: Port number of the vault instance to connect to.
+- **`vault_url`** *(string)*: URL of the vault instance to connect to.
 
 - **`vault_role_id`** *(string, format: password)*: Vault role ID to access a specific prefix.
 
 - **`vault_secret_id`** *(string, format: password)*: Vault secret ID to access a specific prefix.
+
+- **`ca_bundle_location`** *(string, format: path)*: Path pointing to the location of the CA bundle to use when communicating with the vault.
 
 - **`host`** *(string)*: IP of the host. Default: `"127.0.0.1"`.
 
