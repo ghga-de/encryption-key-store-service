@@ -34,15 +34,22 @@
       "writeOnly": true,
       "format": "password"
     },
-    "ca_bundle_location": {
-      "title": "Ca Bundle Location",
-      "description": "Path pointing to the location of the CA bundle to use when communicating with the vault.",
-      "example": "/my_bundle.pem",
+    "vault_verify": {
+      "title": "Vault Verify",
+      "description": "SSL certificates (CA bundle) used to verify the identity of the vault, or True to use the default CAs, or False for no verification.",
+      "default": true,
+      "example": "/etc/ssl/certs/my_bundle.pem",
       "env_names": [
-        "ekss_ca_bundle_location"
+        "ekss_vault_verify"
       ],
-      "type": "string",
-      "format": "path"
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        }
+      ]
     },
     "host": {
       "title": "Host",

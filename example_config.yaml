@@ -1,6 +1,5 @@
 api_root_path: /
 auto_reload: false
-ca_bundle_location: dummy-path
 cors_allow_credentials: null
 cors_allowed_headers: null
 cors_allowed_methods: null
@@ -16,4 +15,5 @@ service_name: encryption_key_store
 vault_role_id: '**********'
 vault_secret_id: '**********'
 vault_url: http://127.0.0.1:8200
+vault_verify: true
 workers: 1

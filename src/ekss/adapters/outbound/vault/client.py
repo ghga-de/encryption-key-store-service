@@ -29,9 +29,7 @@ class VaultAdapter:
 
     def __init__(self, config: VaultConfig):
         """Initialized approle based client and login"""
-        self._client = hvac.Client(
-            url=config.vault_url, verify=config.ca_bundle_location
-        )
+        self._client = hvac.Client(url=config.vault_url, verify=config.vault_verify)
 
         self._role_id = config.vault_role_id.get_secret_value()
         self._secret_id = config.vault_secret_id.get_secret_value()

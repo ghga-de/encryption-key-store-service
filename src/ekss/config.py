@@ -15,8 +15,7 @@
 
 """Config Parameter Modeling and Parsing"""
 
-from pathlib import Path
-from typing import Optional
+from typing import Union
 
 from ghga_service_commons.api import ApiConfigBase
 from hexkit.config import config_from_yaml
@@ -45,8 +44,8 @@ class VaultConfig(BaseSettings):
         True,
         example="/etc/ssl/certs/my_bundle.pem",
         description="SSL certificates (CA bundle) used to"
-          " verify the identity of the vault, or True to"
-          " use the default CAs, or False for no verification.",
+        " verify the identity of the vault, or True to"
+        " use the default CAs, or False for no verification.",
     )
 
 

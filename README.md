@@ -108,7 +108,13 @@ The service requires the following configuration parameters:
 
 - **`vault_secret_id`** *(string, format: password)*: Vault secret ID to access a specific prefix.
 
-- **`ca_bundle_location`** *(string, format: path)*: Path pointing to the location of the CA bundle to use when communicating with the vault.
+- **`vault_verify`**: SSL certificates (CA bundle) used to verify the identity of the vault, or True to use the default CAs, or False for no verification. Default: `true`.
+
+  - **Any of**
+
+    - *boolean*
+
+    - *string*
 
 - **`host`** *(string)*: IP of the host. Default: `"127.0.0.1"`.
 
