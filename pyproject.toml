@@ -23,10 +23,11 @@ classifiers = [
     "Intended Audience :: Developers",
 ]
 dependencies = [
-    "ghga-service-commons[all]>=0.3.2",
+    "ghga-service-commons[all]>=0.8.0",
     "crypt4gh>=1.6",
-    "hexkit>=0.9.3",
+    "hexkit>=0.11.0",
     "hvac>=1.0.2",
+    "pydantic>=1.10.6,<2"
 ]
 
 [project.license]
