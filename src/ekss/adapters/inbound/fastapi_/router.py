@@ -21,12 +21,13 @@ from fastapi import APIRouter, Depends, status
 from requests.exceptions import RequestException
 
 from ekss.adapters.inbound.fastapi_ import exceptions, models
-from ekss.adapters.inbound.fastapi_.deps import get_vault
+from ekss.adapters.inbound.fastapi_.deps import config_injector, get_vault
 from ekss.adapters.outbound.vault import VaultAdapter
 from ekss.adapters.outbound.vault.exceptions import (
     SecretInsertionError,
     SecretRetrievalError,
 )
+from ekss.config import VaultConfig
 from ekss.core.envelope_decryption import extract_envelope_content
 from ekss.core.envelope_encryption import get_envelope
 
@@ -82,11 +83,12 @@ async def health():
 async def post_encryption_secrets(
     *,
     envelope_query: models.InboundEnvelopeQuery,
-    vault: VaultAdapter = Depends(get_vault),
+    vault_config: VaultConfig = Depends(config_injector),
 ):
     """Extract file encryption/decryption secret, create secret ID and extract
     file content offset
     """
+    vault = get_vault(config=vault_config)
     client_pubkey = base64.b64decode(envelope_query.public_key)
     file_part = base64.b64decode(envelope_query.file_part)
     try:
@@ -103,7 +105,9 @@ async def post_encryption_secrets(
     # generate a new secret for re-encryption
     new_secret = os.urandom(32)
     try:
-        secret_id = vault.store_secret(secret=new_secret)
+        secret_id = vault.store_secret(
+            secret=new_secret, prefix=vault_config.vault_path_prefix
+        )
     except SecretInsertionError as error:
         raise exceptions.HttpSecretInsertionError() from error
     except RequestException as error:

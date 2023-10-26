@@ -45,7 +45,7 @@ class VaultAdapter:
             role_id=self._role_id, secret_id=self._secret_id
         )
 
-    def store_secret(self, *, secret: bytes, prefix: str = "ekss") -> str:
+    def store_secret(self, *, secret: bytes, prefix: str) -> str:
         """
         Store a secret under a subpath of the given prefix.
         Generates a UUID4 as key, uses it for the subpath and returns it.

@@ -47,6 +47,11 @@ class VaultConfig(BaseSettings):
         " verify the identity of the vault, or True to"
         " use the default CAs, or False for no verification.",
     )
+    vault_path_prefix: str = Field(
+        ...,
+        description="Path prefix without leading or trailing slashes where secrets should"
+        + " be stored in the vault.",
+    )
 
 
 @config_from_yaml(prefix="ekss")
