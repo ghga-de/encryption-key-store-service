@@ -39,10 +39,7 @@ async def test_extract(
         client_pubkey=client_pubkey,
     )
 
-    secret_id = first_part_fixture.vault.adapter.store_secret(
-        secret=submitter_secret,
-        prefix=first_part_fixture.vault.config.vault_path_prefix,
-    )
+    secret_id = first_part_fixture.vault.adapter.store_secret(secret=submitter_secret)
     result = (submitter_secret, secret_id, offset)
 
     assert all(result)

@@ -30,12 +30,8 @@ def test_connection(vault_fixture: VaultFixture):  # noqa: F811
     # populate
     secret = os.urandom(32)
     secret2 = os.urandom(32)
-    secret_id = vault_fixture.adapter.store_secret(
-        secret=secret, prefix=vault_fixture.config.vault_path_prefix
-    )
-    secret2_id = vault_fixture.adapter.store_secret(
-        secret=secret2, prefix=vault_fixture.config.vault_path_prefix
-    )
+    secret_id = vault_fixture.adapter.store_secret(secret=secret)
+    secret2_id = vault_fixture.adapter.store_secret(secret=secret2)
 
     # test retrieval
     stored_secret = vault_fixture.adapter.get_secret(key=secret_id)

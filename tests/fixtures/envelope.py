@@ -54,9 +54,7 @@ async def envelope_fixture(
     secret = os.urandom(32)
 
     # put secret in database
-    secret_id = vault_fixture.adapter.store_secret(
-        secret=secret, prefix=vault_fixture.config.vault_path_prefix
-    )
+    secret_id = vault_fixture.adapter.store_secret(secret=secret)
 
     yield EnvelopeFixture(
         client_pk=generate_keypair_fixture.public_key,

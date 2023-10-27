@@ -57,7 +57,7 @@ def vault_fixture() -> Generator[VaultFixture, None, None]:
             vault_role_id=role_id,
             vault_secret_id=secret_id,
             vault_verify=True,
-            vault_path_prefix="ekss",
+            vault_path="ekss",
         )
         vault_adapter = VaultAdapter(config=config)
         # client needs some time after creation
