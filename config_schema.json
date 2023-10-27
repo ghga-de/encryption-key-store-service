@@ -53,7 +53,7 @@
     },
     "vault_path": {
       "title": "Vault Path",
-      "description": "Path prefix without leading or trailing slashes where secrets should be stored in the vault.",
+      "description": "Path without leading or trailing slashes where secrets should be stored in the vault.",
       "env_names": [
         "ekss_vault_path"
       ],
