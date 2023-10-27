@@ -116,7 +116,7 @@ The service requires the following configuration parameters:
 
     - *string*
 
-- **`vault_path`** *(string)*: Path prefix without leading or trailing slashes where secrets should be stored in the vault.
+- **`vault_path`** *(string)*: Path without leading or trailing slashes where secrets should be stored in the vault.
 
 - **`host`** *(string)*: IP of the host. Default: `"127.0.0.1"`.
 
