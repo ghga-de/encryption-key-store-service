@@ -49,7 +49,7 @@ class VaultConfig(BaseSettings):
     )
     vault_path: str = Field(
         ...,
-        description="Path prefix without leading or trailing slashes where secrets should"
+        description="Path without leading or trailing slashes where secrets should"
         + " be stored in the vault.",
     )
 
