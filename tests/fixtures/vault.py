@@ -52,7 +52,7 @@ def vault_fixture() -> Generator[VaultFixture, None, None]:
         host = vault_container.get_container_host_ip()
         port = vault_container.get_exposed_port(VAULT_PORT)
         role_id, secret_id = configure_vault(host=host, port=int(port))
-        config = VaultConfig(  # type: ignore
+        config = VaultConfig(
             vault_url=f"http://{host}:{port}",
             vault_role_id=role_id,
             vault_secret_id=secret_id,
