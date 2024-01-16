@@ -1,4 +1,3 @@
-
 [![tests](https://github.com/ghga-de/encryption-key-store-service/actions/workflows/tests.yaml/badge.svg)](https://github.com/ghga-de/encryption-key-store-service/actions/workflows/tests.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/ghga-de/encryption-key-store-service/badge.svg?branch=main)](https://coveralls.io/github/ghga-de/encryption-key-store-service?branch=main)
 
@@ -7,8 +6,6 @@
 Encryption Key Store Sevice - providing crypt4gh file secret extraction, storage and envelope generation
 
 ## Description
-
-<!-- Please provide a short overview of the features of this service.-->
 
 This service implements an interface to extract file encryption secrects from a
 [GA4GH Crypt4GH](https://www.ga4gh.org/news/crypt4gh-a-secure-method-for-sharing-human-genetic-data/)
@@ -64,20 +61,19 @@ path "secret/metadata/ekss/*" {
 }
 ```
 
-
 ## Installation
 
 We recommend using the provided Docker container.
 
 A pre-build version is available at [docker hub](https://hub.docker.com/repository/docker/ghga/encryption-key-store-service):
 ```bash
-docker pull ghga/encryption-key-store-service:1.0.1
+docker pull ghga/encryption-key-store-service:1.1.0
 ```
 
 Or you can build the container yourself from the [`./Dockerfile`](./Dockerfile):
 ```bash
 # Execute in the repo's root dir:
-docker build -t ghga/encryption-key-store-service:1.0.1 .
+docker build -t ghga/encryption-key-store-service:1.1.0 .
 ```
 
 For production-ready deployment, we recommend using Kubernetes, however,
@@ -85,7 +81,7 @@ for simple use cases, you could execute the service using docker
 on a single server:
 ```bash
 # The entrypoint is preconfigured:
-docker run -p 8080:8080 ghga/encryption-key-store-service:1.0.1 --help
+docker run -p 8080:8080 ghga/encryption-key-store-service:1.1.0 --help
 ```
 
 If you prefer not to use containers, you may install the service from source:
@@ -325,14 +321,9 @@ of the pydantic documentation.
 An OpenAPI specification for this service can be found [here](./openapi.yaml).
 
 ## Architecture and Design:
-<!-- Please provide an overview of the architecture and design of the code base.
-Mention anything that deviates from the standard triple hexagonal architecture and
-the corresponding structure. -->
-
 This is a Python-based service following the Triple Hexagonal Architecture pattern.
 It uses protocol/provider pairs and dependency injection mechanisms provided by the
 [hexkit](https://github.com/ghga-de/hexkit) library.
-
 
 ## Development
 
